@@ -43,7 +43,6 @@
             transition: background-color 0.3s ease;
         }
 
-        /* BARRE DE THÈME EN HAUT */
         .barre-theme {
             display: flex;
             justify-content: space-between;
@@ -66,9 +65,7 @@
             box-shadow: 0 2px 4px var(--shadow-couleur);
             transition: all 0.2s ease;
         }
-        .btn-theme:active {
-            transform: scale(0.9);
-        }
+        .btn-theme:active { transform: scale(0.9); }
 
         h1 {
             font-size: 22px;
@@ -200,7 +197,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* STYLE DE BASE GRIS QUAND ÉTEINT */
         .bloc-effet {
             background-color: var(--bg-bouton);
             border: 2px solid var(--bg-bouton-actif);
@@ -222,9 +218,7 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        .bloc-effet:active {
-            cursor: grabbing;
-        }
+        .bloc-effet:active { cursor: grabbing; }
 
         .bloc-effet.en-deplacement {
             opacity: 0.5;
@@ -232,7 +226,6 @@
             transform: scale(0.95);
         }
 
-        /* TEXTE DU MODÈLE SOUS L'EFFET */
         .bloc-effet span {
             font-size: 9px;
             font-weight: bold;
@@ -248,7 +241,7 @@
             border-radius: 4px;
         }
 
-        /* COULEURS DES PÉDALES LORSQU'ELLES SONT ACTIVES (EN FONCTION) */
+        /* COULEURS DES PÉDALES */
         .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; border-color: #ffd60a; color: #000000; text-shadow: none; }
         .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; border-color: #ff9f0a; color: #ffffff; }
         .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; border-color: #ff453a; color: #ffffff; }
@@ -259,13 +252,81 @@
         .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; border-color: #70d6ff; color: #000000; text-shadow: none; }
         .bloc-effet.actif[data-id="REVERB"] { background-color: #00ca4e; border-color: #00ca4e; color: #ffffff; }
 
-        /* Ajustement des étiquettes de texte quand la pédale est active et claire */
         .bloc-effet.actif[data-id="DYNA"] span, 
         .bloc-effet.actif[data-id="DELAY"] span {
             color: #000000;
             background-color: rgba(255,255,255,0.5);
         }
 
+        /* SECTION DES RÉGLAGES (POTENTIOMÈTRES) */
+        .zone-reglages-panel {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--bg-conteneur);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px var(--shadow-couleur);
+            display: none;
+        }
+
+        .titre-reglages {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0a84ff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-couleur);
+            padding-bottom: 5px;
+        }
+
+        .ligne-potentiometre {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+
+        .nom-param {
+            width: 85px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--texte-principal);
+            text-transform: capitalize;
+        }
+
+        .curseur-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--bg-bouton);
+            outline: none;
+        }
+
+        .curseur-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #0a84ff;
+            cursor: pointer;
+        }
+
+        .carre-numerique {
+            width: 45px;
+            height: 28px;
+            background-color: var(--bg-bouton);
+            border: 1px solid var(--border-couleur);
+            border-radius: 6px;
+            color: var(--texte-principal);
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* MODAL POPUP */
         .modal {
             display: none;
             position: fixed;
@@ -330,7 +391,6 @@
 </head>
 <body>
 
-    <!-- BARRE DE CHANGEMENT DE THÈME -->
     <div class="barre-theme">
         <button class="btn-theme" onclick="changerTheme('light')" title="Mode Clair">☀️</button>
         <button class="btn-theme" onclick="changerTheme('dark')" title="Mode Sombre">🌙</button>
@@ -368,6 +428,12 @@
 
     <div class="barre-effets" id="zoneEffets"></div>
 
+    <!-- PANEL POUR LES POTENTIOMÈTRES -->
+    <div class="zone-reglages-panel" id="panelReglages">
+        <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
+        <div id="conteneurSliders"></div>
+    </div>
+
     <div class="modal" id="monPopUp">
         <div class="modal-contenu">
             <div class="modal-titre" id="titrePopUp">Choisir l'effet</div>
@@ -378,59 +444,59 @@
 
     <script>
         const modelesPedales = {
-            'DYNA': ['CG Comp', 'Tube Comp', 'Red Comp'],
-            'AMP': ['Fender Twin', 'Marshall JCM800', 'Vox AC30', 'Mesa Boogie'],
-            'CAB': ['Fender 2x12', 'Marshall 4x12', 'Vox 2x12', 'Mesa 4x12'],
-            'OD': ['Tube Screamer', 'Blues Driver', 'RAT Distortion', 'Big Muff Fuzz', 'Klon Centaur'],
-            'MOD': ['Chorus CE-2', 'Phase 90', 'Flanger', 'Tremolo'],
-            'DELAY': ['Digital Delay', 'Analog Delay', 'Tape Echo'],
-            'REVERB': ['Hall Reverb', 'Spring Reverb', 'Plate Reverb'],
+            'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
+            'AMP': ['Fender Twin', 'Marshall JCM800', 'Vox AC30'],
+            'CAB': ['Fender 2x12', 'Marshall 4x12'],
+            'OD': ['Tube Screamer', 'Blues Driver', 'RAT Distortion'],
+            'MOD': ['Chorus CE-2', 'Phase 90'],
+            'DELAY': ['Digital Delay', 'Analog Delay'],
+            'REVERB': ['Hall Reverb', 'Spring Reverb'],
             'COMP': ['Dynacomp', 'Studio Comp'],
-            'EQ': ['7-Band Graphic', 'Parametric EQ']
+            'EQ': ['7-Band Graphic']
+        };
+
+        // CORRECTION DE LA STRUCTURE D'ASSOCIATION DES PARAMÈTRES
+        const structureReglages = {
+            'NG': ['Threshold'],
+            'Comp': ['Attack', 'Threshold', 'Ratio', 'Level'],
+            'Touch Wah': ['Attack', 'Sens', 'Peak', 'Level'],
+            'Auto Wah': ['Rate', 'Range', 'Peak', 'Level']
         };
 
         let presetsSauvegardes = {
             electrique: {
                 nom: 'Guitare Électrique',
                 ordre: ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'],
-                effets: { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' }
+                effets: { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' },
+                valeursParams: {}
             },
             acoustique: {
                 nom: 'Guitare Acoustique',
                 ordre: ['COMP', 'EQ', 'REVERB'],
-                effets: { 'COMP': 'Non défini', 'EQ': 'Non défini', 'REVERB': 'Non défini' }
+                effets: { 'COMP': 'Non défini', 'EQ': 'Non défini', 'REVERB': 'Non défini' },
+                valeursParams: {}
             }
         };
 
         let modeActuel = 'electrique';
         let categorieEnCours = '';
         let elementEnCours = null;
+        let categorieSelectionneePourReglage = null;
 
         window.onload = function() {
-            // CHARGEMENT DU THÈME SAUVEGARDÉ
             let themeSauvegarde = localStorage.getItem('app_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', themeSauvegarde);
 
             let sauvegardeElec = localStorage.getItem('preset_electrique_v2');
             let sauvegardeAcoust = localStorage.getItem('preset_acoustique_v2');
             
-            if (sauvegardeElec) {
-                let data = JSON.parse(sauvegardeElec);
-                if (!data.ordre.includes('DYNA')) data.ordre.unshift('DYNA');
-                if (!data.ordre.includes('CAB')) data.ordre.splice(2, 0, 'CAB');
-                if (!data.effets['DYNA']) data.effets['DYNA'] = 'Non défini';
-                if (!data.effets['CAB']) data.effets['CAB'] = 'Non défini';
-                presetsSauvegardes.electrique = data;
-            }
-            if (sauvegardeAcoust) {
-                presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust);
-            }
+            if (sauvegardeElec) { presetsSauvegardes.electrique = JSON.parse(sauvegardeElec); }
+            if (sauvegardeAcoust) { presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust); }
 
             changerMode('electrique');
             initDragAndDrop();
         };
 
-        // FONCTION POUR CHANGER LE THÈME (CLAIR / SOMBRE)
         function changerTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('app_theme', theme);
@@ -466,6 +532,9 @@
             });
             
             document.getElementById('zoneEffets').innerHTML = htmlEffets;
+            document.getElementById('panelReglages').style.display = 'none';
+            categorieSelectionneePourReglage = null;
+            
             attacherEvenementsBlocs();
         }
 
@@ -478,11 +547,17 @@
 
                 bloc.addEventListener('click', (e) => {
                     if (!isDragging) {
-                        ouvrirPopUp(categorie, bloc);
+                        let modeleActuel = presetsSauvegardes[modeActuel].effets[categorie];
+                        
+                        if (modeleActuel !== "Non défini") {
+                            afficherZoneSliders(categorie, modeleActuel);
+                        } else {
+                            ouvrirPopUp(categorie, bloc);
+                        }
                     }
                 });
 
-                // --- SOURIS ---
+                // SOURIS DRAG
                 bloc.addEventListener('dragstart', (e) => {
                     isDragging = true;
                     bloc.classList.add('en-deplacement');
@@ -495,9 +570,8 @@
                     sauvegarderOrdreActuel();
                 });
 
-                // --- TACTILE MOBILE ---
+                // TACTILE DRAG
                 let touchStartX, touchStartY;
-
                 bloc.addEventListener('touchstart', (e) => {
                     isDragging = false; 
                     const touch = e.touches[0];
@@ -507,17 +581,13 @@
 
                 bloc.addEventListener('touchmove', (e) => {
                     const touch = e.touches[0];
-                    
                     let deltaX = Math.abs(touch.clientX - touchStartX);
                     let deltaY = Math.abs(touch.clientY - touchStartY);
 
-                    if (deltaX > 8 && deltaX > deltaY && !isDragging) {
-                        return; 
-                    }
+                    if (deltaX > 8 && deltaX > deltaY && !isDragging) return;
 
                     if (deltaX > 8 || deltaY > 8) {
                         if (e.cancelable) e.preventDefault();
-                        
                         isDragging = true;
                         bloc.classList.add('en-deplacement');
                         
@@ -540,7 +610,6 @@
                 bloc.addEventListener('touchend', (e) => {
                     if (isDragging) {
                         if (e.cancelable) e.preventDefault();
-                        
                         bloc.classList.remove('en-deplacement');
                         sauvegarderOrdreActuel();
                         setTimeout(() => { isDragging = false; }, 50);
@@ -549,9 +618,105 @@
             });
         }
 
+        function afficherZoneSliders(categorie, nomModele) {
+            categorieSelectionneePourReglage = categorie;
+            const panel = document.getElementById('panelReglages');
+            const conteneur = document.getElementById('conteneurSliders');
+            document.getElementById('titreReglages').innerText = `Contrôles : ${categorie} (${nomModele})`;
+            
+            let listeParams = structureReglages[nomModele] || ['Level', 'Gain']; 
+            let htmlSliders = '';
+            
+            if (!presetsSauvegardes[modeActuel].valeursParams) {
+                presetsSauvegardes[modeActuel].valeursParams = {};
+            }
+            if (!presetsSauvegardes[modeActuel].valeursParams[nomModele]) {
+                presetsSauvegardes[modeActuel].valeursParams[nomModele] = {};
+            }
+
+            listeParams.forEach(param => {
+                if (presetsSauvegardes[modeActuel].valeursParams[nomModele][param] === undefined) {
+                    presetsSauvegardes[modeActuel].valeursParams[nomModele][param] = 50;
+                }
+                
+                let valeurActuelle = presetsSauvegardes[modeActuel].valeursParams[nomModele][param];
+
+                htmlSliders += `
+                <div class="ligne-potentiometre">
+                    <span class="nom-param">${param}</span>
+                    <input type="range" class="curseur-slider" min="0" max="100" value="${valeurActuelle}" 
+                        oninput="mettreAJourValeurParam('${nomModele}', '${param}', this.value, 'input')">
+                    <input type="number" class="carre-numerique" min="0" max="100" value="${valeurActuelle}" 
+                        oninput="mettreAJourValeurParam('${nomModele}', '${param}', this.value, 'slider')">
+                </div>`;
+            });
+
+            conteneur.innerHTML = htmlSliders;
+            panel.style.display = 'block';
+        }
+
+        function mettreAJourValeurParam(nomModele, param, valeur, cibleAChanger) {
+            let valNum = parseInt(valeur) || 0;
+            if (valNum < 0) valNum = 0;
+            if (valNum > 100) valNum = 100;
+
+            presetsSauvegardes[modeActuel].valeursParams[nomModele][param] = valNum;
+
+            const ligne = event.target.closest('.ligne-potentiometre');
+            if (cibleAChanger === 'input') {
+                ligne.querySelector('.carre-numerique').value = valNum;
+            } else {
+                ligne.querySelector('.curseur-slider').value = valNum;
+            }
+            sauvegarderOrdreActuel();
+        }
+
+        function ouvrirPopUp(categorie, element) {
+            categorieEnCours = categorie;
+            elementEnCours = element;
+            document.getElementById('titrePopUp').innerText = "Modèles " + categorie;
+            
+            let pool = modelesPedales[categorie] || [];
+            let htmlChoix = '';
+            pool.forEach(modele => {
+                htmlChoix += `<button class="btn-choix" onclick="selectionnerModele('${modele}')">${modele}</button>`;
+            });
+            
+            document.getElementById('zoneChoix').innerHTML = htmlChoix;
+            document.getElementById('monPopUp').style.display = 'flex';
+        }
+
+        function selectionnerModele(nomModele) {
+            if (elementEnCours) {
+                let spanSousTexte = elementEnCours.querySelector('.choix-actuel');
+                spanSousTexte.innerText = nomModele;
+                
+                if (nomModele !== "Non défini") {
+                    elementEnCours.classList.add('actif');
+                    afficherZoneSliders(categorieEnCours, nomModele);
+                } else {
+                    elementEnCours.classList.remove('actif');
+                    document.getElementById('panelReglages').style.display = 'none';
+                }
+            }
+            presetsSauvegardes[modeActuel].effets[categorieEnCours] = nomModele;
+            sauvegarderOrdreActuel();
+            fermerPopUp();
+        }
+
+        function eteindreEffetActuel() {
+            if (categorieEnCours) {
+                document.getElementById('panelReglages').style.display = 'none';
+            }
+            selectionnerModele("Non défini");
+        }
+
+        function fermerPopUp() {
+            document.getElementById('monPopUp').style.display = 'none';
+        }
+
         function initDragAndDrop() {
             const conteneur = document.getElementById('zoneEffets');
-
             conteneur.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 const blocEnDeplacement = document.querySelector('.en-deplacement');
@@ -568,7 +733,6 @@
 
         function obtenirElementApres(conteneur, x) {
             const elementsFixes = [...conteneur.querySelectorAll('.bloc-effet:not(.en-deplacement)')];
-
             return elementsFixes.reduce((proche, enfant) => {
                 const boite = enfant.getBoundingClientRect();
                 const decalage = x - boite.left - boite.width / 2;
@@ -587,57 +751,15 @@
                 nouvelOrdre.push(bloc.getAttribute('data-id'));
             });
             presetsSauvegardes[modeActuel].ordre = nouvelOrdre;
-            
             localStorage.setItem('preset_' + modeActuel + '_v2', JSON.stringify(presetsSauvegardes[modeActuel]));
-        }
-
-        function ouvrirPopUp(categorie, element) {
-            categorieEnCours = categorie;
-            elementEnCours = element;
-            document.getElementById('titrePopUp').innerText = "Modèles " + categorie;
-            
-            let pool = modelesPedales[categorie] || [];
-            let htmlChoix = '';
-            pool.forEach(modele => {
-                htmlChoix += `<button class="btn-choix" onclick="selectionnerModele('${modele}')">${modele}</button>`;
-            });
-            
-            document.getElementById('zoneChoix').innerHTML = htmlChoix;
-            document.getElementById('monPopUp').style.display = 'flex';
-        }
-
-        function fermerPopUp() {
-            document.getElementById('monPopUp').style.display = 'none';
-        }
-
-        function selectionnerModele(nomModele) {
-            if (elementEnCours) {
-                let spanSousTexte = elementEnCours.querySelector('.choix-actuel');
-                spanSousTexte.innerText = nomModele;
-                
-                if (nomModele !== "Non défini") {
-                    elementEnCours.classList.add('actif');
-                } else {
-                    elementEnCours.classList.remove('actif');
-                }
-            }
-            presetsSauvegardes[modeActuel].effets[categorieEnCours] = nomModele;
-            sauvegarderOrdreActuel();
-            fermerPopUp();
-        }
-
-        function eteindreEffetActuel() {
-            selectionnerModele("Non défini");
         }
 
         function enregistrerPreset(typeGuitare) {
             let nomParDefaut = presetsSauvegardes[typeGuitare].nom;
             let nouveauNom = prompt("Donne un nom à ton preset :", nomParDefaut);
-            
             if (nouveauNom !== null && nouveauNom.trim() !== "") {
                 presetsSauvegardes[typeGuitare].nom = nouveauNom;
             }
-
             sauvegarderOrdreActuel();
             alert("Preset sauvegardé avec succès !");
         }
@@ -645,14 +767,14 @@
         function effacerPreset(typeGuitare) {
             presetsSauvegardes[typeGuitare].nom = typeGuitare === 'electrique' ? 'Guitare Électrique' : 'Guitare Acoustique';
             presetsSauvegardes[typeGuitare].ordre = typeGuitare === 'electrique' ? ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'] : ['COMP', 'EQ', 'REVERB'];
-            
             presetsSauvegardes[typeGuitare].effets = {};
+            presetsSauvegardes[typeGuitare].valeursParams = {};
+            
             presetsSauvegardes[typeGuitare].ordre.forEach(cat => {
                 presetsSauvegardes[typeGuitare].effets[cat] = "Non défini";
             });
             
             localStorage.setItem('preset_' + typeGuitare + '_v2', JSON.stringify(presetsSauvegardes[typeGuitare]));
-            
             if (modeActuel === typeGuitare) {
                 changerMode(typeGuitare);
             }
