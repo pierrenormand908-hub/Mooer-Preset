@@ -5,9 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Prime</title>
     <style>
+        /* THÈME SOMBRE (PAR DÉFAUT) */
+        :root {
+            --bg-principal: #1c1c1e;
+            --bg-conteneur: #2c2c2e;
+            --bg-bouton: #3a3a3c;
+            --bg-bouton-actif: #48484a;
+            --texte-principal: #ffffff;
+            --texte-secondaire: #aeaeb2;
+            --border-couleur: #3a3a3c;
+            --shadow-couleur: rgba(0,0,0,0.25);
+        }
+
+        /* THÈME CLAIR */
+        [data-theme="light"] {
+            --bg-principal: #f2f2f7;
+            --bg-conteneur: #ffffff;
+            --bg-bouton: #e5e5ea;
+            --bg-bouton-actif: #d1d1d6;
+            --texte-principal: #000000;
+            --texte-secondaire: #8e8e93;
+            --border-couleur: #e5e5ea;
+            --shadow-couleur: rgba(0,0,0,0.1);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #1c1c1e;
+            background-color: var(--bg-principal);
             margin: 0;
             padding: 20px;
             display: flex;
@@ -16,12 +40,42 @@
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden; 
+            transition: background-color 0.3s ease;
+        }
+
+        /* BARRE DE THÈME EN HAUT */
+        .barre-theme {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 360px;
+            margin-bottom: 5px;
+        }
+
+        .btn-theme {
+            background-color: var(--bg-conteneur);
+            border: 1px solid var(--border-couleur);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px var(--shadow-couleur);
+            transition: all 0.2s ease;
+        }
+        .btn-theme:active {
+            transform: scale(0.9);
         }
 
         h1 {
             font-size: 22px;
-            color: #ffffff;
+            color: var(--texte-principal);
+            margin-top: 0;
             margin-bottom: 25px;
+            transition: color 0.3s ease;
         }
 
         .selecteurs-container {
@@ -44,17 +98,17 @@
         .btn-guitare {
             width: 100px;
             height: 55px;
-            background-color: #2c2c2e;
-            border: 2px solid #3a3a3c;
+            background-color: var(--bg-conteneur);
+            border: 2px solid var(--border-couleur);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 13px;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--texte-principal);
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 6px var(--shadow-couleur);
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -69,13 +123,13 @@
         .rectangle-icone-central {
             width: 45px; 
             height: 88px;
-            border: 2px solid #3a3a3c;
+            border: 2px solid var(--border-couleur);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #2c2c2e;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            background-color: var(--bg-conteneur);
+            box-shadow: inset 0 2px 4px var(--shadow-couleur);
             overflow: hidden;
         }
 
@@ -100,7 +154,7 @@
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 4px var(--shadow-couleur);
             height: 30px;
             box-sizing: border-box;
             display: flex;
@@ -121,20 +175,20 @@
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background-color: #2c2c2e;
+            background-color: var(--bg-conteneur);
             padding: 6px 14px;
             border-radius: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 4px var(--shadow-couleur);
         }
 
         .barre-effets {
             width: 100%;
             max-width: 400px;
-            background-color: #2c2c2e;
+            background-color: var(--bg-conteneur);
             border-radius: 16px;
             padding: 20px 15px;
             box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 15px var(--shadow-couleur);
             min-height: 120px;
             display: flex;
             gap: 12px;
@@ -148,8 +202,8 @@
 
         /* STYLE DE BASE GRIS QUAND ÉTEINT */
         .bloc-effet {
-            background-color: #3a3a3c;
-            border: 2px solid #48484a;
+            background-color: var(--bg-bouton);
+            border: 2px solid var(--bg-bouton-actif);
             border-radius: 12px;
             width: 70px;
             height: 70px;
@@ -159,13 +213,13 @@
             justify-content: center;
             font-size: 12px;
             font-weight: bold;
-            color: #ffffff;
+            color: var(--texte-principal);
             flex-shrink: 0;
             cursor: grab;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 4px var(--shadow-couleur);
             transition: all 0.2s ease;
             touch-action: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .bloc-effet:active {
@@ -195,14 +249,14 @@
         }
 
         /* COULEURS DES PÉDALES LORSQU'ELLES SONT ACTIVES (EN FONCTION) */
-        .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; border-color: #ffd60a; color: #000000; }
+        .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; border-color: #ffd60a; color: #000000; text-shadow: none; }
         .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; border-color: #ff9f0a; color: #ffffff; }
         .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; border-color: #ff453a; color: #ffffff; }
         .bloc-effet.actif[data-id="AMP"]    { background-color: #30d158; border-color: #34c759; color: #ffffff; }
         .bloc-effet.actif[data-id="EQ"]     { background-color: #5856d6; border-color: #5e5ce6; color: #ffffff; }
         .bloc-effet.actif[data-id="CAB"]    { background-color: #bf5af2; border-color: #c670f5; color: #ffffff; }
         .bloc-effet.actif[data-id="MOD"]    { background-color: #0a84ff; border-color: #0a84ff; color: #ffffff; }
-        .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; border-color: #70d6ff; color: #000000; }
+        .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; border-color: #70d6ff; color: #000000; text-shadow: none; }
         .bloc-effet.actif[data-id="REVERB"] { background-color: #00ca4e; border-color: #00ca4e; color: #ffffff; }
 
         /* Ajustement des étiquettes de texte quand la pédale est active et claire */
@@ -223,8 +277,8 @@
         }
 
         .modal-contenu {
-            background-color: #2c2c2e;
-            border: 1px solid #3a3a3c;
+            background-color: var(--bg-conteneur);
+            border: 1px solid var(--border-couleur);
             width: 85%;
             max-width: 320px;
             border-radius: 14px;
@@ -237,7 +291,7 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #ffffff;
+            color: var(--texte-principal);
         }
 
         .liste-choix {
@@ -249,7 +303,7 @@
         }
 
         .btn-choix {
-            background-color: #3a3a3c;
+            background-color: var(--bg-bouton);
             border: none;
             border-radius: 8px;
             padding: 12px;
@@ -261,8 +315,8 @@
 
         .btn-eteindre {
             margin-top: 15px;
-            background-color: #48484a;
-            color: #ff453a; /* Texte en rouge pour signifier l'extinction */
+            background-color: var(--bg-bouton-actif);
+            color: #ff453a;
             border: none;
             border-radius: 8px;
             padding: 12px;
@@ -270,11 +324,17 @@
             font-weight: bold;
             font-size: 15px;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 4px var(--shadow-couleur);
         }
     </style>
 </head>
 <body>
+
+    <!-- BARRE DE CHANGEMENT DE THÈME -->
+    <div class="barre-theme">
+        <button class="btn-theme" onclick="changerTheme('light')" title="Mode Clair">☀️</button>
+        <button class="btn-theme" onclick="changerTheme('dark')" title="Mode Sombre">🌙</button>
+    </div>
 
     <h1>Mooer Prime</h1>
 
@@ -312,7 +372,6 @@
         <div class="modal-contenu">
             <div class="modal-titre" id="titrePopUp">Choisir l'effet</div>
             <div class="liste-choix" id="zoneChoix"></div>
-            <!-- Changement ici : Devient le bouton pour éteindre l'effet -->
             <button class="btn-eteindre" onclick="eteindreEffetActuel()">Éteindre l'effet</button>
         </div>
     </div>
@@ -348,6 +407,10 @@
         let elementEnCours = null;
 
         window.onload = function() {
+            // CHARGEMENT DU THÈME SAUVEGARDÉ
+            let themeSauvegarde = localStorage.getItem('app_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', themeSauvegarde);
+
             let sauvegardeElec = localStorage.getItem('preset_electrique_v2');
             let sauvegardeAcoust = localStorage.getItem('preset_acoustique_v2');
             
@@ -366,6 +429,12 @@
             changerMode('electrique');
             initDragAndDrop();
         };
+
+        // FONCTION POUR CHANGER LE THÈME (CLAIR / SOMBRE)
+        function changerTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('app_theme', theme);
+        }
 
         function changerMode(mode) {
             modeActuel = mode;
@@ -557,7 +626,6 @@
             fermerPopUp();
         }
 
-        // NOUVELLE FONCTION : Remet l'effet à "Non défini" et retire la couleur (devient gris)
         function eteindreEffetActuel() {
             selectionnerModele("Non défini");
         }
