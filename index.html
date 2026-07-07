@@ -142,8 +142,10 @@
             align-items: center;
             justify-content: flex-start;
             overflow-x: auto;
+            position: relative;
         }
 
+        /* BLOC EFFET AVEC EFFETS VISUELS POUR LE GLISSER-DÉPOSER */
         .bloc-effet {
             background-color: #3a3a3c;
             border: 1px solid #48484a;
@@ -158,8 +160,21 @@
             font-weight: bold;
             color: #ffffff;
             flex-shrink: 0;
-            cursor: pointer;
+            cursor: grab; /* Curseur en forme de main */
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            transition: transform 0.1s ease, border-color 0.1s ease;
+            touch-action: none; /* Crucial pour le drag tactile sur mobile */
+        }
+
+        .bloc-effet:active {
+            cursor: grabbing;
+        }
+
+        /* Style quand le bloc est en train d'être déplacé */
+        .bloc-effet.en-deplacement {
+            opacity: 0.5;
+            border: 2px dashed #0a84ff;
+            transform: scale(0.95);
         }
 
         .bloc-effet span {
@@ -292,11 +307,13 @@
         let presetsSauvegardes = {
             electrique: {
                 nom: 'Guitare Électrique',
-                // Ajout de DYNA et CAB dans l'objet des effets électriques
+                // Tableau de l'ordre actuel pour se rappeler de l'agencement sauvé
+                ordre: ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'],
                 effets: { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' }
             },
             acoustique: {
                 nom: 'Guitare Acoustique',
+                ordre: ['COMP', 'EQ', 'REVERB'],
                 effets: { 'COMP': 'Non défini', 'EQ': 'Non défini', 'REVERB': 'Non défini' }
             }
         };
@@ -313,6 +330,7 @@
             if (sauvegardeAcoust) presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust);
 
             changerMode('electrique');
+            initDragAndDrop();
         };
 
         function changerMode(mode) {
@@ -331,29 +349,139 @@
                 imageElement.src = 'img/guitar_28109.png'; 
             }
             
-            let htmlEffets = '';
             let data = presetsSauvegardes[mode].effets;
-
-            if (mode === 'electrique') {
-                // Ajout des blocs HTML pour DYNA et CAB dans la barre d'effets électrique
-                htmlEffets = `
-                    <div class="bloc-effet" onclick="ouvrirPopUp('DYNA', this)">DYNA<span class="choix-actuel" id="txt-DYNA">${data['DYNA']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('AMP', this)">AMP<span class="choix-actuel" id="txt-AMP">${data['AMP']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('CAB', this)">CAB<span class="choix-actuel" id="txt-CAB">${data['CAB']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('OD', this)">OD<span class="choix-actuel" id="txt-OD">${data['OD']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('MOD', this)">MOD<span class="choix-actuel" id="txt-MOD">${data['MOD']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('DELAY', this)">DELAY<span class="choix-actuel" id="txt-DELAY">${data['DELAY']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('REVERB', this)">REVERB<span class="choix-actuel" id="txt-REVERB">${data['REVERB']}</span></div>
-                `;
-            } else {
-                htmlEffets = `
-                    <div class="bloc-effet" onclick="ouvrirPopUp('COMP', this)">COMP<span class="choix-actuel" id="txt-COMP">${data['COMP']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('EQ', this)">EQ<span class="choix-actuel" id="txt-EQ">${data['EQ']}</span></div>
-                    <div class="bloc-effet" onclick="ouvrirPopUp('REVERB', this)">REVERB<span class="choix-actuel" id="txt-REVERB">${data['REVERB']}</span></div>
-                `;
-            }
+            let ordreActuel = presetsSauvegardes[mode].ordre || Object.keys(data);
+            
+            // On reconstruit le HTML en respectant l'ordre personnalisé
+            let htmlEffets = '';
+            ordreActuel.forEach(cat => {
+                htmlEffets += `<div class="bloc-effet" draggable="true" data-id="${cat}">
+                    ${cat}<span class="choix-actuel" id="txt-${cat}">${data[cat]}</span>
+                </div>`;
+            });
+            
             document.getElementById('zoneEffets').innerHTML = htmlEffets;
             rafraichirCouleursTexte();
+            
+            // Réinitialiser les écouteurs de clics et de glisser-déposer sur les nouveaux éléments
+            attacherEvenementsBlocs();
+        }
+
+        // GESTION DU CLIC VS DRAG & DROP
+        function attacherEvenementsBlocs() {
+            const blocs = document.querySelectorAll('.bloc-effet');
+            let isDragging = false;
+
+            blocs.forEach(bloc => {
+                let categorie = bloc.getAttribute('data-id');
+
+                // Événement clic standard (PC/Mobile)
+                bloc.addEventListener('click', (e) => {
+                    if (!isDragging) {
+                        ouvrirPopUp(categorie, bloc);
+                    }
+                });
+
+                // --- DRAG & DROP POUR SOURIS (PC) ---
+                bloc.addEventListener('dragstart', (e) => {
+                    isDragging = true;
+                    bloc.classList.add('en-deplacement');
+                    e.dataTransfer.setData('text/plain', categorie);
+                });
+
+                bloc.addEventListener('dragend', () => {
+                    isDragging = false;
+                    bloc.classList.remove('en-deplacement');
+                    sauvegarderOrdreActuel();
+                });
+
+                // --- DRAG & DROP POUR TOUCH (MOBILE/TABLETTE) ---
+                let touchStartX, touchStartY;
+                let elemClone = null;
+
+                bloc.addEventListener('touchstart', (e) => {
+                    isDragging = false; 
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                }, { passive: true });
+
+                bloc.addEventListener('touchmove', (e) => {
+                    const touch = e.touches[0];
+                    // Si le doigt bouge de plus de 10px, on considère que c'est un drag, pas un clic
+                    if (Math.abs(touch.clientX - touchStartX) > 10 || Math.abs(touch.clientY - touchStartY) > 10) {
+                        isDragging = true;
+                        bloc.classList.add('en-deplacement');
+                        
+                        // Déplacement visuel simulé pour le tactile
+                        const conteneur = document.getElementById('zoneEffets');
+                        const cible = document.elementFromPoint(touch.clientX, touch.clientY);
+                        const blocCible = cible ? cible.closest('.bloc-effet') : null;
+                        
+                        if (blocCible && blocCible !== bloc) {
+                            const rect = blocCible.getBoundingClientRect();
+                            const milieu = rect.left + rect.width / 2;
+                            if (touch.clientX < milieu) {
+                                conteneur.insertBefore(bloc, blocCible);
+                            } else {
+                                conteneur.insertBefore(bloc, blocCible.nextSibling);
+                            }
+                        }
+                    }
+                }, { passive: true });
+
+                bloc.addEventListener('touchend', () => {
+                    if (isDragging) {
+                        bloc.classList.remove('en-deplacement');
+                        sauvegarderOrdreActuel();
+                        // Petit délai pour éviter que le clic se déclenche en relâchant le doigt
+                        setTimeout(() => { isDragging = false; }, 50);
+                    }
+                });
+            });
+        }
+
+        function initDragAndDrop() {
+            const conteneur = document.getElementById('zoneEffets');
+
+            conteneur.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const blocEnDeplacement = document.querySelector('.en-deplacement');
+                if (!blocEnDeplacement) return;
+
+                const apresElement = obtenirElementApres(conteneur, e.clientX);
+                if (apresElement == null) {
+                    conteneur.appendChild(blocEnDeplacement);
+                } else {
+                    conteneur.insertBefore(blocEnDeplacement, apresElement);
+                }
+            });
+        }
+
+        function obtenirElementApres(conteneur, x) {
+            const elementsFixes = [...conteneur.querySelectorAll('.bloc-effet:not(.en-deplacement)')];
+
+            return elementsFixes.reduce((proche, enfant) => {
+                const boite = enfant.getBoundingClientRect();
+                const decalage = x - boite.left - boite.width / 2;
+                if (decalage < 0 && decalage > proche.decalage) {
+                    return { decalage: decalage, element: enfant };
+                } else {
+                    return proche;
+                }
+            }, { decalage: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function sauvegarderOrdreActuel() {
+            const blocs = document.querySelectorAll('.bloc-effet');
+            let nouvelOrdre = [];
+            blocs.forEach(bloc => {
+                nouvelOrdre.push(bloc.getAttribute('data-id'));
+            });
+            presetsSauvegardes[modeActuel].ordre = nouvelOrdre;
+            
+            // Sauvegarder directement en tâche de fond dans le localStorage
+            localStorage.setItem('preset_' + modeActuel + '_v2', JSON.stringify(presetsSauvegardes[modeActuel]));
         }
 
         function ouvrirPopUp(categorie, element) {
@@ -382,6 +510,7 @@
             }
             presetsSauvegardes[modeActuel].effets[categorieEnCours] = nomModele;
             rafraichirCouleursTexte();
+            sauvegarderOrdreActuel();
             fermerPopUp();
         }
 
@@ -405,13 +534,13 @@
                 presetsSauvegardes[typeGuitare].nom = nouveauNom;
             }
 
-            localStorage.setItem('preset_' + typeGuitare + '_v2', JSON.stringify(presetsSauvegardes[typeGuitare]));
-            document.getElementById('nomPresetAffiche').innerText = "Preset : " + presetsSauvegardes[typeGuitare].nom;
+            sauvegarderOrdreActuel();
             alert("Preset sauvegardé avec succès !");
         }
 
         function effacerPreset(typeGuitare) {
             presetsSauvegardes[typeGuitare].nom = typeGuitare === 'electrique' ? 'Guitare Électrique' : 'Guitare Acoustique';
+            presetsSauvegardes[typeGuitare].ordre = typeGuitare === 'electrique' ? ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'] : ['COMP', 'EQ', 'REVERB'];
             
             for (let cat in presetsSauvegardes[typeGuitare].effets) {
                 presetsSauvegardes[typeGuitare].effets[cat] = "Non défini";
