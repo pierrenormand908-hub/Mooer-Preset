@@ -79,18 +79,17 @@
             overflow: hidden;
         }
 
-        /* Retour au style d'origine pour l'image */
+        /* Style d'origine pour l'image */
         .mon-icone-png {
             max-width: 100%;
             max-height: 100%;
             display: block;
         }
 
-        /* BOUTONS AJUSTÉS : PLUS LONGS, PLUS LARGES ET CENTRAGE IMPECCABLE */
         .actions-preset-container {
             display: flex;
             gap: 6px;
-            width: 110px; /* Légèrement plus large pour donner de l'espace aux boutons */
+            width: 110px;
         }
 
         .btn-enregistrer, .btn-effacer {
@@ -98,15 +97,13 @@
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 0; /* Nettoyage du padding pour un centrage précis */
+            padding: 0;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            height: 30px; /* Hauteur augmentée de 25px à 30px */
+            height: 30px;
             box-sizing: border-box;
-
-            /* Flexbox magique pour centrer parfaitement "Effacer" et "Sauver" */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -281,7 +278,9 @@
 
     <script>
         const modelesPedales = {
+            'DYNA': ['CG Comp', 'Tube Comp', 'Red Comp'],
             'AMP': ['Fender Twin', 'Marshall JCM800', 'Vox AC30', 'Mesa Boogie'],
+            'CAB': ['Fender 2x12', 'Marshall 4x12', 'Vox 2x12', 'Mesa 4x12'],
             'OD': ['Tube Screamer', 'Blues Driver', 'RAT Distortion', 'Big Muff Fuzz', 'Klon Centaur'],
             'MOD': ['Chorus CE-2', 'Phase 90', 'Flanger', 'Tremolo'],
             'DELAY': ['Digital Delay', 'Analog Delay', 'Tape Echo'],
@@ -293,7 +292,8 @@
         let presetsSauvegardes = {
             electrique: {
                 nom: 'Guitare Électrique',
-                effets: { 'AMP': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' }
+                // Ajout de DYNA et CAB dans l'objet des effets électriques
+                effets: { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' }
             },
             acoustique: {
                 nom: 'Guitare Acoustique',
@@ -335,8 +335,11 @@
             let data = presetsSauvegardes[mode].effets;
 
             if (mode === 'electrique') {
+                // Ajout des blocs HTML pour DYNA et CAB dans la barre d'effets électrique
                 htmlEffets = `
+                    <div class="bloc-effet" onclick="ouvrirPopUp('DYNA', this)">DYNA<span class="choix-actuel" id="txt-DYNA">${data['DYNA']}</span></div>
                     <div class="bloc-effet" onclick="ouvrirPopUp('AMP', this)">AMP<span class="choix-actuel" id="txt-AMP">${data['AMP']}</span></div>
+                    <div class="bloc-effet" onclick="ouvrirPopUp('CAB', this)">CAB<span class="choix-actuel" id="txt-CAB">${data['CAB']}</span></div>
                     <div class="bloc-effet" onclick="ouvrirPopUp('OD', this)">OD<span class="choix-actuel" id="txt-OD">${data['OD']}</span></div>
                     <div class="bloc-effet" onclick="ouvrirPopUp('MOD', this)">MOD<span class="choix-actuel" id="txt-MOD">${data['MOD']}</span></div>
                     <div class="bloc-effet" onclick="ouvrirPopUp('DELAY', this)">DELAY<span class="choix-actuel" id="txt-DELAY">${data['DELAY']}</span></div>
