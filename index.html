@@ -258,39 +258,40 @@
             background-color: rgba(255,255,255,0.5);
         }
 
-        /* SECTION DES RÉGLAGES (POTENTIOMÈTRES) */
+        /* SECTION DES RÉGLAGES STYLE ME-80 COMPACT */
         .zone-reglages-panel {
             width: 100%;
             max-width: 400px;
             background-color: var(--bg-conteneur);
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: 20px;
+            border-radius: 14px;
+            padding: 10px 12px;
+            margin-top: 15px;
             box-sizing: border-box;
-            box-shadow: 0 4px 15px var(--shadow-couleur);
+            box-shadow: 0 4px 12px var(--shadow-couleur);
             display: none;
         }
 
         .titre-reglages {
-            font-size: 14px;
+            font-size: 11px;
             font-weight: 700;
             color: #0a84ff;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             border-bottom: 1px solid var(--border-couleur);
-            padding-bottom: 5px;
+            padding-bottom: 3px;
+            letter-spacing: 0.5px;
         }
 
         .ligne-potentiometre {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
-            gap: 10px;
+            margin-bottom: 6px;
+            gap: 8px;
         }
 
         .nom-param {
-            width: 85px;
-            font-size: 12px;
+            width: 75px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--texte-principal);
             text-transform: capitalize;
@@ -299,30 +300,30 @@
         .curseur-slider {
             flex: 1;
             -webkit-appearance: none;
-            height: 6px;
-            border-radius: 3px;
+            height: 4px; /* Plus mince */
+            border-radius: 2px;
             background: var(--bg-bouton);
             outline: none;
         }
 
         .curseur-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 14px; /* Plus petit bouton */
+            height: 14px;
             border-radius: 50%;
             background: #0a84ff;
             cursor: pointer;
         }
 
         .carre-numerique {
-            width: 45px;
-            height: 28px;
+            width: 36px; /* Plus compact */
+            height: 22px;
             background-color: var(--bg-bouton);
             border: 1px solid var(--border-couleur);
-            border-radius: 6px;
+            border-radius: 4px;
             color: var(--texte-principal);
             text-align: center;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: bold;
         }
 
@@ -405,7 +406,7 @@
             </div>
             <div class="actions-preset-container">
                 <button class="btn-enregistrer" onclick="enregistrerPreset('electrique')">Sauver</button>
-                <button class="btn-effacer" onclick="effacerPreset('electrique')">Effacer</button>
+                <button class="btn-effacer" onclick="effacerPreset('effacer')">Effacer</button>
             </div>
         </div>
 
@@ -428,7 +429,6 @@
 
     <div class="barre-effets" id="zoneEffets"></div>
 
-    <!-- PANEL POUR LES POTENTIOMÈTRES -->
     <div class="zone-reglages-panel" id="panelReglages">
         <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
         <div id="conteneurSliders"></div>
@@ -455,7 +455,6 @@
             'EQ': ['7-Band Graphic']
         };
 
-        // CORRECTION DE LA STRUCTURE D'ASSOCIATION DES PARAMÈTRES
         const structureReglages = {
             'NG': ['Threshold'],
             'Comp': ['Attack', 'Threshold', 'Ratio', 'Level'],
@@ -481,7 +480,6 @@
         let modeActuel = 'electrique';
         let categorieEnCours = '';
         let elementEnCours = null;
-        let categorieSelectionneePourReglage = null;
 
         window.onload = function() {
             let themeSauvegarde = localStorage.getItem('app_theme') || 'dark';
@@ -533,8 +531,13 @@
             
             document.getElementById('zoneEffets').innerHTML = htmlEffets;
             document.getElementById('panelReglages').style.display = 'none';
-            categorieSelectionneePourReglage = null;
             
+            // Si la première pédale chargée possède déjà un effet actif, on l'affiche en bas
+            let premiereCat = ordreActuel[0];
+            if (premiereCat && data[premiereCat] !== "Non défini") {
+                afficherZoneSliders(premiereCat, data[premiereCat]);
+            }
+
             attacherEvenementsBlocs();
         }
 
@@ -547,13 +550,8 @@
 
                 bloc.addEventListener('click', (e) => {
                     if (!isDragging) {
-                        let modeleActuel = presetsSauvegardes[modeActuel].effets[categorie];
-                        
-                        if (modeleActuel !== "Non défini") {
-                            afficherZoneSliders(categorie, modeleActuel);
-                        } else {
-                            ouvrirPopUp(categorie, bloc);
-                        }
+                        // FIX : Un clic ouvre TOUJOURS le pop-up de sélection maintenant !
+                        ouvrirPopUp(categorie, bloc);
                     }
                 });
 
@@ -619,7 +617,6 @@
         }
 
         function afficherZoneSliders(categorie, nomModele) {
-            categorieSelectionneePourReglage = categorie;
             const panel = document.getElementById('panelReglages');
             const conteneur = document.getElementById('conteneurSliders');
             document.getElementById('titreReglages').innerText = `Contrôles : ${categorie} (${nomModele})`;
