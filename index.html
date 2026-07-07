@@ -444,7 +444,7 @@
     </div>
 
     <script>
-        // MODÈLES DE PÉDALES AVEC TOUS LES AMPLIS INCLUS
+        // MODÈLES DE PÉDALES À JOUR AVEC TOUS LES AMPLIS ET BAFFLES
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
@@ -466,7 +466,13 @@
                 'Regal Tone OD2', 'Carol OD', 'EV 5050 DS', 'HT Club DS', 'Hugen OD', 
                 'Huger DS', 'Koche DS'
             ],
-            'CAB': ['Fender 2x12', 'Marshall 4x12'],
+            'CAB': [
+                'Regal Tone 110', 'US DLX 112', 'Sonic 112', 'Blues 112', 'Mark 112', 
+                'Dr Zee 112', 'Cardeff 112', 'US TW 212', 'Citrus 212', 'Dr Zee 212', 
+                'Jazz 212', 'Uk 212', 'Tow Stones 212', 'US Bass 410', '1960 412', 
+                'Eagle P412', 'Eagle S412', 'Rec 412', 'Citrus 412', 'Slow 412', 
+                'PV 5050 412', 'EV 5050 412', 'HT 412', 'Diesel 412'
+            ],
             'MOD': ['Chorus CE-2', 'Phase 90'],
             'DELAY': ['Digital Delay', 'Analog Delay'],
             'REVERB': ['Hall Reverb', 'Spring Reverb'],
@@ -489,6 +495,11 @@
         // Ajouter Gain, Bass, Mid, Treble, Presence, Master pour tous les modèles AMP
         modelesPedales.AMP.forEach(modele => {
             structureReglages[modele] = ['Gain', 'Bass', 'Mid', 'Treble', 'Presence', 'Master'];
+        });
+
+        // Configurer la catégorie CAB pour qu'elle renvoie un tableau vide (pas de réglages)
+        modelesPedales.CAB.forEach(modele => {
+            structureReglages[modele] = [];
         });
 
         let presetsSauvegardes = {
@@ -646,9 +657,16 @@
         function afficherZoneSliders(categorie, nomModele) {
             const panel = document.getElementById('panelReglages');
             const conteneur = document.getElementById('conteneurSliders');
-            document.getElementById('titreReglages').innerText = `Contrôles : ${categorie} (${nomModele})`;
             
-            let listeParams = structureReglages[nomModele] || ['Level', 'Gain']; 
+            let listeParams = structureReglages[nomModele] || []; 
+            
+            // Si la liste des paramètres est vide (comme pour CAB), on cache le panel
+            if (listeParams.length === 0) {
+                panel.style.display = 'none';
+                return;
+            }
+
+            document.getElementById('titreReglages').innerText = `Contrôles : ${categorie} (${nomModele})`;
             let htmlSliders = '';
             
             if (!presetsSauvegardes[modeActuel].valeursParams) {
