@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Prime</title>
     <style>
         body {
@@ -15,6 +15,8 @@
             align-items: center;
             user-select: none;
             -webkit-user-select: none;
+            /* Empêche le rebond élastique global sur Safari */
+            overflow: hidden; 
         }
 
         h1 {
@@ -65,7 +67,6 @@
             box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
         }
 
-        /* LE RECTANGLE CENTRAL */
         .rectangle-icone-central {
             width: 45px; 
             height: 88px;
@@ -79,7 +80,6 @@
             overflow: hidden;
         }
 
-        /* Style d'origine pour l'image */
         .mon-icone-png {
             max-width: 100%;
             max-height: 100%;
@@ -143,9 +143,11 @@
             justify-content: flex-start;
             overflow-x: auto;
             position: relative;
+            /* AJOUT : Bloque les gestes natifs de Safari (défilement/zooms parasites) sur ce conteneur */
+            touch-action: none; 
+            -webkit-overflow-scrolling: auto;
         }
 
-        /* BLOC EFFET AVEC EFFETS VISUELS POUR LE GLISSER-DÉPOSER */
         .bloc-effet {
             background-color: #3a3a3c;
             border: 1px solid #48484a;
@@ -160,17 +162,16 @@
             font-weight: bold;
             color: #ffffff;
             flex-shrink: 0;
-            cursor: grab; /* Curseur en forme de main */
+            cursor: grab;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
             transition: transform 0.1s ease, border-color 0.1s ease;
-            touch-action: none; /* Crucial pour le drag tactile sur mobile */
+            touch-action: none;
         }
 
         .bloc-effet:active {
             cursor: grabbing;
         }
 
-        /* Style quand le bloc est en train d'être déplacé */
         .bloc-effet.en-deplacement {
             opacity: 0.5;
             border: 2px dashed #0a84ff;
@@ -330,6 +331,13 @@
 
             changerMode('electrique');
             initDragAndDrop();
+
+            // Bloque le défilement global de la page entière sur Safari pour éviter les sauts d'écran
+            document.body.addEventListener('touchmove', function(e) {
+                if(e.target.closest('#zoneChoix') === null) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
         };
 
         function changerMode(mode) {
@@ -364,7 +372,6 @@
             attacherEvenementsBlocs();
         }
 
-        // GESTION DU CLIC VS DRAG & DROP CORRIGÉE POUR MOBILE
         function attacherEvenementsBlocs() {
             const blocs = document.querySelectorAll('.bloc-effet');
             let isDragging = false;
@@ -372,14 +379,13 @@
             blocs.forEach(bloc => {
                 let categorie = bloc.getAttribute('data-id');
 
-                // Événement clic standard (PC/Mobile)
                 bloc.addEventListener('click', (e) => {
                     if (!isDragging) {
                         ouvrirPopUp(categorie, bloc);
                     }
                 });
 
-                // --- DRAG & DROP POUR SOURIS (PC) ---
+                // --- SOURIS ---
                 bloc.addEventListener('dragstart', (e) => {
                     isDragging = true;
                     bloc.classList.add('en-deplacement');
@@ -392,7 +398,7 @@
                     sauvegarderOrdreActuel();
                 });
 
-                // --- DRAG & DROP POUR TOUCH (MOBILE/TABLETTE CORRIGÉ) ---
+                // --- TACTILE SAFARI ENHANCED ---
                 let touchStartX, touchStartY;
 
                 bloc.addEventListener('touchstart', (e) => {
@@ -400,16 +406,15 @@
                     const touch = e.touches[0];
                     touchStartX = touch.clientX;
                     touchStartY = touch.clientY;
-                }, { passive: false }); // Changé à false pour pouvoir stopper les actions d'iOS si nécessaire
+                }, { passive: false });
 
                 bloc.addEventListener('touchmove', (e) => {
                     const touch = e.touches[0];
                     
-                    // Si le doigt bouge de plus de 10px, on gère le déplacement
-                    if (Math.abs(touch.clientX - touchStartX) > 10 || Math.abs(touch.clientY - touchStartY) > 10) {
-                        
-                        // CORRECTION : On empêche Safari d'ouvrir la sélection de texte ou la recherche Web
+                    if (Math.abs(touch.clientX - touchStartX) > 8 || Math.abs(touch.clientY - touchStartY) > 8) {
+                        // AJOUT/FORCE : On coupe l'herbe sous le pied des gestes Safari de manière agressive
                         if (e.cancelable) e.preventDefault();
+                        e.stopPropagation();
                         
                         isDragging = true;
                         bloc.classList.add('en-deplacement');
@@ -428,12 +433,12 @@
                             }
                         }
                     }
-                }, { passive: false }); // Doit être à false pour bloquer les gestes natifs d'iOS
+                }, { passive: false });
 
                 bloc.addEventListener('touchend', (e) => {
                     if (isDragging) {
-                        // CORRECTION : Empêche l'ouverture d'un pop-up parasite au relâchement
                         if (e.cancelable) e.preventDefault();
+                        e.stopPropagation();
                         
                         bloc.classList.remove('en-deplacement');
                         sauvegarderOrdreActuel();
