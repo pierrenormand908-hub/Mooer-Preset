@@ -142,7 +142,6 @@
             justify-content: flex-start;
             overflow-x: auto;
             position: relative;
-            /* CORRECTION ICI : Permet le défilement horizontal (pan-x) tout en bloquant le reste */
             touch-action: pan-x; 
             -webkit-overflow-scrolling: touch;
         }
@@ -325,8 +324,18 @@
             let sauvegardeElec = localStorage.getItem('preset_electrique_v2');
             let sauvegardeAcoust = localStorage.getItem('preset_acoustique_v2');
             
-            if (sauvegardeElec) presetsSauvegardes.electrique = JSON.parse(sauvegardeElec);
-            if (sauvegardeAcoust) presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust);
+            if (sauvegardeElec) {
+                let data = JSON.parse(sauvegardeElec);
+                // Force la présence de DYNA et CAB si manquants dans une vieille sauvegarde
+                if (!data.ordre.includes('DYNA')) data.ordre.unshift('DYNA');
+                if (!data.ordre.includes('CAB')) data.ordre.splice(2, 0, 'CAB');
+                if (!data.effets['DYNA']) data.effets['DYNA'] = 'Non défini';
+                if (!data.effets['CAB']) data.effets['CAB'] = 'Non défini';
+                presetsSauvegardes.electrique = data;
+            }
+            if (sauvegardeAcoust) {
+                presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust);
+            }
 
             changerMode('electrique');
             initDragAndDrop();
@@ -353,9 +362,11 @@
             
             let htmlEffets = '';
             ordreActuel.forEach(cat => {
-                htmlEffets += `<div class="bloc-effet" draggable="true" data-id="${cat}">
-                    ${cat}<span class="choix-actuel" id="txt-${cat}">${data[cat]}</span>
-                </div>`;
+                if (data[cat] !== undefined) {
+                    htmlEffets += `<div class="bloc-effet" draggable="true" data-id="${cat}">
+                        ${cat}<span class="choix-actuel" id="txt-${cat}">${data[cat]}</span>
+                    </div>`;
+                }
             });
             
             document.getElementById('zoneEffets').innerHTML = htmlEffets;
@@ -406,12 +417,10 @@
                     let deltaX = Math.abs(touch.clientX - touchStartX);
                     let deltaY = Math.abs(touch.clientY - touchStartY);
 
-                    // Si on bouge plus horizontalement, on laisse défiler la liste normalement
                     if (deltaX > 8 && deltaX > deltaY && !isDragging) {
                         return; 
                     }
 
-                    // Si on reste sur place ou qu'on bouge verticalement, on gère le drag du bloc
                     if (deltaX > 8 || deltaY > 8) {
                         if (e.cancelable) e.preventDefault();
                         
@@ -546,9 +555,11 @@
             presetsSauvegardes[typeGuitare].nom = typeGuitare === 'electrique' ? 'Guitare Électrique' : 'Guitare Acoustique';
             presetsSauvegardes[typeGuitare].ordre = typeGuitare === 'electrique' ? ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'] : ['COMP', 'EQ', 'REVERB'];
             
-            for (let cat in presetsSauvegardes[typeGuitare].effets) {
+            // Reconstruit proprement le dictionnaire d'effets par défaut
+            presetsSauvegardes[typeGuitare].effets = {};
+            presetsSauvegardes[typeGuitare].ordre.forEach(cat => {
                 presetsSauvegardes[typeGuitare].effets[cat] = "Non défini";
-            }
+            });
             
             localStorage.setItem('preset_' + typeGuitare + '_v2', JSON.stringify(presetsSauvegardes[typeGuitare]));
             
