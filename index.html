@@ -259,16 +259,18 @@
             cursor: pointer;
         }
 
-        .btn-fermer {
+        .btn-eteindre {
             margin-top: 15px;
             background-color: #48484a;
-            color: white;
+            color: #ff453a; /* Texte en rouge pour signifier l'extinction */
             border: none;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
-            font-weight: 600;
+            font-weight: bold;
+            font-size: 15px;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -310,7 +312,8 @@
         <div class="modal-contenu">
             <div class="modal-titre" id="titrePopUp">Choisir l'effet</div>
             <div class="liste-choix" id="zoneChoix"></div>
-            <button class="btn-fermer" onclick="fermerPopUp()">Annuler</button>
+            <!-- Changement ici : Devient le bouton pour éteindre l'effet -->
+            <button class="btn-eteindre" onclick="eteindreEffetActuel()">Éteindre l'effet</button>
         </div>
     </div>
 
@@ -386,7 +389,6 @@
             let htmlEffets = '';
             ordreActuel.forEach(cat => {
                 if (data[cat] !== undefined) {
-                    // Ajoute la classe 'actif' si un effet est sélectionné
                     let classeActive = (data[cat] !== "Non défini") ? "actif" : "";
                     htmlEffets += `<div class="bloc-effet ${classeActive}" draggable="true" data-id="${cat}">
                         ${cat}<span class="choix-actuel" id="txt-${cat}">${data[cat]}</span>
@@ -544,7 +546,6 @@
                 let spanSousTexte = elementEnCours.querySelector('.choix-actuel');
                 spanSousTexte.innerText = nomModele;
                 
-                // Allume la couleur si l'effet est activé
                 if (nomModele !== "Non défini") {
                     elementEnCours.classList.add('actif');
                 } else {
@@ -554,6 +555,11 @@
             presetsSauvegardes[modeActuel].effets[categorieEnCours] = nomModele;
             sauvegarderOrdreActuel();
             fermerPopUp();
+        }
+
+        // NOUVELLE FONCTION : Remet l'effet à "Non défini" et retire la couleur (devient gris)
+        function eteindreEffetActuel() {
+            selectionnerModele("Non défini");
         }
 
         function enregistrerPreset(typeGuitare) {
