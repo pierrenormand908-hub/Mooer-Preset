@@ -86,10 +86,11 @@
             display: block;
         }
 
+        /* BOUTONS AJUSTÉS : PLUS LONGS, PLUS LARGES ET CENTRAGE IMPECCABLE */
         .actions-preset-container {
             display: flex;
             gap: 6px;
-            width: 100px;
+            width: 110px; /* Légèrement plus large pour donner de l'espace aux boutons */
         }
 
         .btn-enregistrer, .btn-effacer {
@@ -97,14 +98,18 @@
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 6px 0;
+            padding: 0; /* Nettoyage du padding pour un centrage précis */
             font-size: 11px;
             font-weight: 600;
-            text-align: center;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            height: 25px;
+            height: 30px; /* Hauteur augmentée de 25px à 30px */
             box-sizing: border-box;
+
+            /* Flexbox magique pour centrer parfaitement "Effacer" et "Sauver" */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-enregistrer { background-color: #30d158; }
