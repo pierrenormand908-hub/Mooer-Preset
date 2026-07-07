@@ -15,8 +15,7 @@
             align-items: center;
             user-select: none;
             -webkit-user-select: none;
-            /* Empêche le rebond élastique global sur Safari */
-            overflow: hidden; 
+            overflow-x: hidden; 
         }
 
         h1 {
@@ -143,9 +142,9 @@
             justify-content: flex-start;
             overflow-x: auto;
             position: relative;
-            /* AJOUT : Bloque les gestes natifs de Safari (défilement/zooms parasites) sur ce conteneur */
-            touch-action: none; 
-            -webkit-overflow-scrolling: auto;
+            /* CORRECTION ICI : Permet le défilement horizontal (pan-x) tout en bloquant le reste */
+            touch-action: pan-x; 
+            -webkit-overflow-scrolling: touch;
         }
 
         .bloc-effet {
@@ -331,13 +330,6 @@
 
             changerMode('electrique');
             initDragAndDrop();
-
-            // Bloque le défilement global de la page entière sur Safari pour éviter les sauts d'écran
-            document.body.addEventListener('touchmove', function(e) {
-                if(e.target.closest('#zoneChoix') === null) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
         };
 
         function changerMode(mode) {
@@ -398,7 +390,7 @@
                     sauvegarderOrdreActuel();
                 });
 
-                // --- TACTILE SAFARI ENHANCED ---
+                // --- TACTILE MOBILE ---
                 let touchStartX, touchStartY;
 
                 bloc.addEventListener('touchstart', (e) => {
@@ -406,15 +398,22 @@
                     const touch = e.touches[0];
                     touchStartX = touch.clientX;
                     touchStartY = touch.clientY;
-                }, { passive: false });
+                }, { passive: true });
 
                 bloc.addEventListener('touchmove', (e) => {
                     const touch = e.touches[0];
                     
-                    if (Math.abs(touch.clientX - touchStartX) > 8 || Math.abs(touch.clientY - touchStartY) > 8) {
-                        // AJOUT/FORCE : On coupe l'herbe sous le pied des gestes Safari de manière agressive
+                    let deltaX = Math.abs(touch.clientX - touchStartX);
+                    let deltaY = Math.abs(touch.clientY - touchStartY);
+
+                    // Si on bouge plus horizontalement, on laisse défiler la liste normalement
+                    if (deltaX > 8 && deltaX > deltaY && !isDragging) {
+                        return; 
+                    }
+
+                    // Si on reste sur place ou qu'on bouge verticalement, on gère le drag du bloc
+                    if (deltaX > 8 || deltaY > 8) {
                         if (e.cancelable) e.preventDefault();
-                        e.stopPropagation();
                         
                         isDragging = true;
                         bloc.classList.add('en-deplacement');
@@ -438,7 +437,6 @@
                 bloc.addEventListener('touchend', (e) => {
                     if (isDragging) {
                         if (e.cancelable) e.preventDefault();
-                        e.stopPropagation();
                         
                         bloc.classList.remove('en-deplacement');
                         sauvegarderOrdreActuel();
