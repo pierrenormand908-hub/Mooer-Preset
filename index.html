@@ -23,25 +23,26 @@
             margin-bottom: 25px;
         }
 
-        /* Conteneur des boutons de sélection (côte à côte) */
+        /* Conteneur principal qui aligne la colonne gauche, le rectangle, et la colonne droite */
         .selecteurs-container {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             width: 100%;
-            max-width: 340px;
+            max-width: 360px;
             margin-bottom: 25px;
             justify-content: center;
+            align-items: center; /* Aligne tout le monde parfaitement sur le centre horizontal */
         }
 
+        /* Les blocs de presets (gros bouton + petits boutons) */
         .colonne-preset {
-            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 8px;
             align-items: center;
         }
 
-        /* Retour aux boutons d'origine (100px par 55px) */
+        /* Boutons de sélection */
         .btn-guitare {
             width: 100px;
             height: 55px;
@@ -68,6 +69,18 @@
             box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
         }
 
+        /* LE GRAND RECTANGLE CENTRAL (HAUTEUR AJUSTÉE À 88PX) */
+        .rectangle-icone-central {
+            width: 45px;
+            height: 88px; /* Hauteur égale au bloc complet (gros + petits boutons) */
+            border: 2px dashed #48484a; /* Bordure pointillée */
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(44, 44, 46, 0.4);
+        }
+
         /* Conteneur pour mettre les boutons Sauver/Effacer côte à côte */
         .actions-preset-container {
             display: flex;
@@ -86,6 +99,8 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            height: 25px; /* Hauteur fixe pour le calcul précis */
+            box-sizing: border-box;
         }
 
         .btn-enregistrer { background-color: #30d158; }
@@ -222,6 +237,7 @@
     <h1>Mooer Prime</h1>
 
     <div class="selecteurs-container">
+        <!-- BLOC GAUCHE : ÉLECTRIQUE -->
         <div class="colonne-preset">
             <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">
                 ÉLECTRIQUE
@@ -232,6 +248,12 @@
             </div>
         </div>
 
+        <!-- RECTANGLE CENTRAL AJUSTÉ EN HAUTEUR (88PX) -->
+        <div class="rectangle-icone-central" id="zoneIconeCentrale">
+            <!-- Ton icône ira ici -->
+        </div>
+
+        <!-- BLOC DROITE : ACOUSTIQUE -->
         <div class="colonne-preset">
             <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">
                 ACOUSTIQUE
