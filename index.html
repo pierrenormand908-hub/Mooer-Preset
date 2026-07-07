@@ -69,11 +69,11 @@
             box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
         }
 
-        /* LE GRAND RECTANGLE CENTRAL (HAUTEUR AJUSTÉE À 88PX) */
+        /* LE GRAND RECTANGLE CENTRAL (HAUTEUR DE 88PX) */
         .rectangle-icone-central {
             width: 45px;
-            height: 88px; /* Hauteur égale au bloc complet (gros + petits boutons) */
-            border: 2px solid #3a3a3c; /* Remplacement des pointillés par une bordure pleine propre */
+            height: 88px; /* Égal au bloc complet (gros + petits boutons) */
+            border: 2px solid #3a3a3c;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -82,11 +82,11 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Style pour les SVG de guitare */
+        /* Style automatique pour la future icône SVG que tu vas ajouter */
         .rectangle-icone-central svg {
             width: 28px;
             height: 60px;
-            fill: #0a84ff; /* Couleur Bleu Royal */
+            fill: #0a84ff; /* L'icône sera en Bleu Royal par défaut */
         }
 
         /* Conteneur pour mettre les boutons Sauver/Effacer côte à côte */
@@ -245,7 +245,6 @@
     <h1>Mooer Prime</h1>
 
     <div class="selecteurs-container">
-        <!-- BLOC GAUCHE : ÉLECTRIQUE -->
         <div class="colonne-preset">
             <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">
                 ÉLECTRIQUE
@@ -256,12 +255,9 @@
             </div>
         </div>
 
-        <!-- RECTANGLE CENTRAL AVEC LOGIQUE D'ICÔNE DYNAMIQUE -->
         <div class="rectangle-icone-central" id="zoneIconeCentrale">
-            <!-- Rempli dynamiquement en JS -->
-        </div>
+            </div>
 
-        <!-- BLOC DROITE : ACOUSTIQUE -->
         <div class="colonne-preset">
             <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">
                 ACOUSTIQUE
@@ -286,10 +282,6 @@
     </div>
 
     <script>
-        // Dessins SVG simplifiés et propres pour le rectangle central
-        const iconeElectrique = `<svg viewBox="0 0 30 60"><path d="M12,40 L12,10 Q12,5 15,5 Q18,5 18,10 L18,40 Q24,42 24,48 Q24,56 15,56 Q6,56 6,48 Q6,42 12,40 Z M10,12 L20,12 M10,18 L20,18 M10,24 L20,24 M13,46 A2,2 0 1,0 17,46 M13,51 A2,2 0 1,0 17,51"/></svg>`;
-        const iconeAcoustique = `<svg viewBox="0 0 30 60"><path d="M11,32 L11,12 Q11,8 15,8 Q19,8 19,12 L19,32 Q26,34 26,44 Q26,54 15,54 Q4,54 4,44 Q4,34 11,32 Z M15,40 A3,3 0 1,0 15,40.1 M11,16 L19,16 M11,22 L19,22"/></svg>`;
-
         const modelesPedales = {
             'AMP': ['Fender Twin', 'Marshall JCM800', 'Vox AC30', 'Mesa Boogie'],
             'OD': ['Tube Screamer', 'Blues Driver', 'RAT Distortion', 'Big Muff Fuzz', 'Klon Centaur'],
@@ -332,14 +324,6 @@
             
             document.getElementById('nomPresetAffiche').innerText = "Preset : " + presetsSauvegardes[mode].nom;
             
-            // Changement d'icône dynamique dans le rectangle central
-            const zoneIcone = document.getElementById('zoneIconeCentrale');
-            if (mode === 'electrique') {
-                zoneIcone.innerHTML = iconeElectrique;
-            } else {
-                zoneIcone.innerHTML = iconeAcoustique;
-            }
-
             let htmlEffets = '';
             let data = presetsSauvegardes[mode].effets;
 
