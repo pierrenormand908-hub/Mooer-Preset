@@ -307,7 +307,6 @@
         let presetsSauvegardes = {
             electrique: {
                 nom: 'Guitare Électrique',
-                // Tableau de l'ordre actuel pour se rappeler de l'agencement sauvé
                 ordre: ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'],
                 effets: { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' }
             },
@@ -352,7 +351,6 @@
             let data = presetsSauvegardes[mode].effets;
             let ordreActuel = presetsSauvegardes[mode].ordre || Object.keys(data);
             
-            // On reconstruit le HTML en respectant l'ordre personnalisé
             let htmlEffets = '';
             ordreActuel.forEach(cat => {
                 htmlEffets += `<div class="bloc-effet" draggable="true" data-id="${cat}">
@@ -363,11 +361,10 @@
             document.getElementById('zoneEffets').innerHTML = htmlEffets;
             rafraichirCouleursTexte();
             
-            // Réinitialiser les écouteurs de clics et de glisser-déposer sur les nouveaux éléments
             attacherEvenementsBlocs();
         }
 
-        // GESTION DU CLIC VS DRAG & DROP
+        // GESTION DU CLIC VS DRAG & DROP CORRIGÉE POUR MOBILE
         function attacherEvenementsBlocs() {
             const blocs = document.querySelectorAll('.bloc-effet');
             let isDragging = false;
@@ -395,25 +392,28 @@
                     sauvegarderOrdreActuel();
                 });
 
-                // --- DRAG & DROP POUR TOUCH (MOBILE/TABLETTE) ---
+                // --- DRAG & DROP POUR TOUCH (MOBILE/TABLETTE CORRIGÉ) ---
                 let touchStartX, touchStartY;
-                let elemClone = null;
 
                 bloc.addEventListener('touchstart', (e) => {
                     isDragging = false; 
                     const touch = e.touches[0];
                     touchStartX = touch.clientX;
                     touchStartY = touch.clientY;
-                }, { passive: true });
+                }, { passive: false }); // Changé à false pour pouvoir stopper les actions d'iOS si nécessaire
 
                 bloc.addEventListener('touchmove', (e) => {
                     const touch = e.touches[0];
-                    // Si le doigt bouge de plus de 10px, on considère que c'est un drag, pas un clic
+                    
+                    // Si le doigt bouge de plus de 10px, on gère le déplacement
                     if (Math.abs(touch.clientX - touchStartX) > 10 || Math.abs(touch.clientY - touchStartY) > 10) {
+                        
+                        // CORRECTION : On empêche Safari d'ouvrir la sélection de texte ou la recherche Web
+                        if (e.cancelable) e.preventDefault();
+                        
                         isDragging = true;
                         bloc.classList.add('en-deplacement');
                         
-                        // Déplacement visuel simulé pour le tactile
                         const conteneur = document.getElementById('zoneEffets');
                         const cible = document.elementFromPoint(touch.clientX, touch.clientY);
                         const blocCible = cible ? cible.closest('.bloc-effet') : null;
@@ -428,13 +428,15 @@
                             }
                         }
                     }
-                }, { passive: true });
+                }, { passive: false }); // Doit être à false pour bloquer les gestes natifs d'iOS
 
-                bloc.addEventListener('touchend', () => {
+                bloc.addEventListener('touchend', (e) => {
                     if (isDragging) {
+                        // CORRECTION : Empêche l'ouverture d'un pop-up parasite au relâchement
+                        if (e.cancelable) e.preventDefault();
+                        
                         bloc.classList.remove('en-deplacement');
                         sauvegarderOrdreActuel();
-                        // Petit délai pour éviter que le clic se déclenche en relâchant le doigt
                         setTimeout(() => { isDragging = false; }, 50);
                     }
                 });
@@ -480,7 +482,6 @@
             });
             presetsSauvegardes[modeActuel].ordre = nouvelOrdre;
             
-            // Sauvegarder directement en tâche de fond dans le localStorage
             localStorage.setItem('preset_' + modeActuel + '_v2', JSON.stringify(presetsSauvegardes[modeActuel]));
         }
 
