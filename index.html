@@ -146,9 +146,10 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* STYLE DE BASE GRIS QUAND ÉTEINT */
         .bloc-effet {
             background-color: #3a3a3c;
-            border: 1px solid #48484a;
+            border: 2px solid #48484a;
             border-radius: 12px;
             width: 70px;
             height: 70px;
@@ -156,14 +157,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             color: #ffffff;
             flex-shrink: 0;
             cursor: grab;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            transition: transform 0.1s ease, border-color 0.1s ease;
+            transition: all 0.2s ease;
             touch-action: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
         }
 
         .bloc-effet:active {
@@ -172,20 +174,42 @@
 
         .bloc-effet.en-deplacement {
             opacity: 0.5;
-            border: 2px dashed #0a84ff;
+            border: 2px dashed #0a84ff !important;
             transform: scale(0.95);
         }
 
+        /* TEXTE DU MODÈLE SOUS L'EFFET */
         .bloc-effet span {
             font-size: 9px;
-            font-weight: normal;
-            color: #aeaeb2;
-            margin-top: 4px;
+            font-weight: bold;
+            color: #e5e5ea;
+            margin-top: 5px;
             text-align: center;
             max-width: 65px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            background-color: rgba(0,0,0,0.4);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        /* COULEURS DES PÉDALES LORSQU'ELLES SONT ACTIVES (EN FONCTION) */
+        .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; border-color: #ffd60a; color: #000000; }
+        .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; border-color: #ff9f0a; color: #ffffff; }
+        .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; border-color: #ff453a; color: #ffffff; }
+        .bloc-effet.actif[data-id="AMP"]    { background-color: #30d158; border-color: #34c759; color: #ffffff; }
+        .bloc-effet.actif[data-id="EQ"]     { background-color: #5856d6; border-color: #5e5ce6; color: #ffffff; }
+        .bloc-effet.actif[data-id="CAB"]    { background-color: #bf5af2; border-color: #c670f5; color: #ffffff; }
+        .bloc-effet.actif[data-id="MOD"]    { background-color: #0a84ff; border-color: #0a84ff; color: #ffffff; }
+        .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; border-color: #70d6ff; color: #000000; }
+        .bloc-effet.actif[data-id="REVERB"] { background-color: #00ca4e; border-color: #00ca4e; color: #ffffff; }
+
+        /* Ajustement des étiquettes de texte quand la pédale est active et claire */
+        .bloc-effet.actif[data-id="DYNA"] span, 
+        .bloc-effet.actif[data-id="DELAY"] span {
+            color: #000000;
+            background-color: rgba(255,255,255,0.5);
         }
 
         .modal {
@@ -326,7 +350,6 @@
             
             if (sauvegardeElec) {
                 let data = JSON.parse(sauvegardeElec);
-                // Force la présence de DYNA et CAB si manquants dans une vieille sauvegarde
                 if (!data.ordre.includes('DYNA')) data.ordre.unshift('DYNA');
                 if (!data.ordre.includes('CAB')) data.ordre.splice(2, 0, 'CAB');
                 if (!data.effets['DYNA']) data.effets['DYNA'] = 'Non défini';
@@ -363,15 +386,15 @@
             let htmlEffets = '';
             ordreActuel.forEach(cat => {
                 if (data[cat] !== undefined) {
-                    htmlEffets += `<div class="bloc-effet" draggable="true" data-id="${cat}">
+                    // Ajoute la classe 'actif' si un effet est sélectionné
+                    let classeActive = (data[cat] !== "Non défini") ? "actif" : "";
+                    htmlEffets += `<div class="bloc-effet ${classeActive}" draggable="true" data-id="${cat}">
                         ${cat}<span class="choix-actuel" id="txt-${cat}">${data[cat]}</span>
                     </div>`;
                 }
             });
             
             document.getElementById('zoneEffets').innerHTML = htmlEffets;
-            rafraichirCouleursTexte();
-            
             attacherEvenementsBlocs();
         }
 
@@ -520,23 +543,17 @@
             if (elementEnCours) {
                 let spanSousTexte = elementEnCours.querySelector('.choix-actuel');
                 spanSousTexte.innerText = nomModele;
+                
+                // Allume la couleur si l'effet est activé
+                if (nomModele !== "Non défini") {
+                    elementEnCours.classList.add('actif');
+                } else {
+                    elementEnCours.classList.remove('actif');
+                }
             }
             presetsSauvegardes[modeActuel].effets[categorieEnCours] = nomModele;
-            rafraichirCouleursTexte();
             sauvegarderOrdreActuel();
             fermerPopUp();
-        }
-
-        function rafraichirCouleursTexte() {
-            document.querySelectorAll('.choix-actuel').forEach(span => {
-                if(span.innerText === "Non défini") {
-                    span.style.color = '#aeaeb2';
-                    span.style.fontWeight = 'normal';
-                } else {
-                    span.style.color = '#0a84ff';
-                    span.style.fontWeight = 'bold';
-                }
-            });
         }
 
         function enregistrerPreset(typeGuitare) {
@@ -555,7 +572,6 @@
             presetsSauvegardes[typeGuitare].nom = typeGuitare === 'electrique' ? 'Guitare Électrique' : 'Guitare Acoustique';
             presetsSauvegardes[typeGuitare].ordre = typeGuitare === 'electrique' ? ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'] : ['COMP', 'EQ', 'REVERB'];
             
-            // Reconstruit proprement le dictionnaire d'effets par défaut
             presetsSauvegardes[typeGuitare].effets = {};
             presetsSauvegardes[typeGuitare].ordre.forEach(cat => {
                 presetsSauvegardes[typeGuitare].effets[cat] = "Non défini";
