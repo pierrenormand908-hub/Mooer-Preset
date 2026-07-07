@@ -444,7 +444,7 @@
     </div>
 
     <script>
-        // MODÈLES DE PÉDALES MAJ AVEC LES OPTIONS DE OD
+        // MODÈLES DE PÉDALES AVEC TOUS LES AMPLIS INCLUS
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
@@ -453,7 +453,19 @@
                 'Black Rat', 'Grey Faze', 'Muffy', 'Full DS', 'Shed', 'Riet', 
                 'MTL Zone', 'MTL Master', 'Obsessive Dist'
             ],
-            'AMP': ['Fender Twin', 'Marshall JCM800', 'Vox AC30'],
+            'AMP': [
+                '65 us DLX', '65 us TW', '59 us Bass', 'US Sonic', 'US Blues CL', 
+                'Us Blues OD', 'E650 CL', 'Powerbell CL', 'Blacknight CL', 'Mark III CL', 
+                'Mark V CL', 'Tri Rec CL', 'Rockvrb CL', 'Dr Zee 18 JR', 'Dr Zee Reck', 
+                'Jet 100H CL', 'Jazz 120', 'UK 30 CL', 'UK 30 OD', 'HWT 103', 
+                'PV 5050 CL', 'REgal Tone CL', 'Regal Tone OD1', 'Carol CL', 'Cardeff', 
+                'EV 5050 CL', 'HT Club CL', 'Hugen CL', 'Koche OD', 'J 800', 
+                'J 900', 'PLX 100', 'E650 DS', 'Powerbell DS', 'Blacknight DS', 
+                'Mark III DS', 'Mark V DS', 'Tri Rec DS', 'Rockvrb DS', 'Citrus 30', 
+                'Citrus 50', 'Slow 100 CR', 'Slow 100 DS', 'Jet 100H OD', 'PV 5050 DS', 
+                'Regal Tone OD2', 'Carol OD', 'EV 5050 DS', 'HT Club DS', 'Hugen OD', 
+                'Huger DS', 'Koche DS'
+            ],
             'CAB': ['Fender 2x12', 'Marshall 4x12'],
             'MOD': ['Chorus CE-2', 'Phase 90'],
             'DELAY': ['Digital Delay', 'Analog Delay'],
@@ -462,7 +474,6 @@
             'EQ': ['7-Band Graphic']
         };
 
-        // ASSIGNATION DES RÉGLAGES POUR CHAQUE OD ET DYNA
         const structureReglages = {
             'NG': ['Threshold'],
             'Comp': ['Attack', 'Threshold', 'Ratio', 'Level'],
@@ -470,9 +481,14 @@
             'Auto Wah': ['Rate', 'Range', 'Peak', 'Level']
         };
 
-        // Ajouter automatiquement Gain, Tone, Vol pour chaque modèle de la catégorie OD
+        // Ajouter Gain, Tone, Vol pour la catégorie OD
         modelesPedales.OD.forEach(modele => {
             structureReglages[modele] = ['Gain', 'Tone', 'Vol'];
+        });
+
+        // Ajouter Gain, Bass, Mid, Treble, Presence, Master pour tous les modèles AMP
+        modelesPedales.AMP.forEach(modele => {
+            structureReglages[modele] = ['Gain', 'Bass', 'Mid', 'Treble', 'Presence', 'Master'];
         });
 
         let presetsSauvegardes = {
