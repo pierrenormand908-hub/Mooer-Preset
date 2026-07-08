@@ -24,6 +24,10 @@
             --border-couleur: #4f4f52;
             --shadow-couleur: rgba(0,0,0,0.5);
             --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 48%, rgba(255,255,255,0) 50%);
+            
+            /* Pour les options épurées */
+            --bg-action-flat: #3a3a3c;
+            --texte-action-flat: #ffffff;
         }
 
         /* THÈME CLAIR */
@@ -38,6 +42,10 @@
             --border-couleur: #a5a5aa;
             --shadow-couleur: rgba(0,0,0,0.15);
             --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0) 50%);
+            
+            /* Pour les options épurées */
+            --bg-action-flat: #e5e5ea;
+            --texte-action-flat: #000000;
         }
 
         body {
@@ -71,10 +79,10 @@
             margin-bottom: 5px;
         }
 
-        /* STYLE BOUTON THÈME VISTA */
+        /* BOUTON THÈME MODERNE ET DISCRET */
         .btn-theme {
-            background: var(--bg-bouton-vista);
-            border: 1px solid var(--border-couleur);
+            background-color: var(--bg-bouton);
+            border: none;
             border-radius: 50%;
             width: 36px;
             height: 36px;
@@ -83,13 +91,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-theme::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: var(--reflet-glossy); pointer-events: none;
+            box-shadow: 0 2px 4px var(--shadow-couleur);
         }
         .btn-theme:active { transform: scale(0.95); }
 
@@ -98,7 +100,7 @@
             color: var(--texte-principal);
             margin-top: 0;
             margin-bottom: 25px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .selecteurs-container {
@@ -118,7 +120,7 @@
             align-items: center;
         }
 
-        /* BOUTON GUITARE VISTA AERO */
+        /* BOUTON SELECTION DE GUITARE - STYLE VISTA */
         .btn-guitare {
             width: 100px;
             height: 55px;
@@ -177,11 +179,10 @@
             width: 110px;
         }
 
-        /* PETITS BOUTONS STYLE VISTA */
+        /* BOUTONS ACTIONS SAUVER/EFFACER STYLE MODERNE FLAT */
         .btn-enregistrer, .btn-effacer {
             flex: 1;
-            color: white;
-            border: 1px solid rgba(0,0,0,0.3);
+            border: none;
             border-radius: 6px;
             padding: 0;
             font-size: 11px;
@@ -192,22 +193,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.3);
-            text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
-        .btn-enregistrer::after, .btn-effacer::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%); pointer-events: none;
-        }
+        .btn-enregistrer { background-color: #34c759; color: white; }
+        .btn-enregistrer:active { background-color: #248a3d; }
 
-        .btn-enregistrer { background: linear-gradient(to bottom, #54e07a 0%, #30d158 45%, #1cb643 50%, #28c350 100%); border-color: #1a8a33; }
-        .btn-enregistrer:active { transform: scale(0.96); }
-
-        .btn-effacer { background: linear-gradient(to bottom, #ff6b63 0%, #ff453a 45%, #df2c22 50%, #eb3b30 100%); border-color: #b01e16; }
-        .btn-effacer:active { transform: scale(0.96); }
+        .btn-effacer { background-color: #ff3b30; color: white; }
+        .btn-effacer:active { background-color: #c72c24; }
 
         .nom-preset-affiche {
             font-size: 13px;
@@ -220,7 +213,6 @@
             padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid var(--border-couleur);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .barre-effets {
@@ -231,7 +223,7 @@
             border: 1px solid var(--border-couleur);
             padding: 20px 15px;
             box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0px rgba(255,255,255,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             min-height: 135px;
             display: flex;
             gap: 14px;
@@ -243,7 +235,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* EFFETS STYLE BOUTONS BOMBES VISTA PLASTIQUE / GLOSSY */
+        /* LE PÉDALIER : EFFETS STYLE BOUTONS BOMBES VISTA PLASTIQUE / GLOSSY */
         .bloc-effet {
             background: var(--bg-bouton-vista);
             border: 1px solid var(--border-couleur);
@@ -269,7 +261,7 @@
             text-shadow: 0 1px 1px rgba(0,0,0,0.5);
         }
 
-        /* Le fameux reflet plastique blanc Vista */
+        /* Le reflet brillant plastique Vista */
         .bloc-effet::after {
             content: '';
             position: absolute;
@@ -315,10 +307,10 @@
             padding: 2px 0;
             border-radius: 4px;
             box-sizing: border-box;
-            z-index: 2; /* Reste visible sous le reflet */
+            z-index: 2; 
         }
 
-        /* COULEURS DES COCKPITS GLOSSY (ACTIFS) */
+        /* COULEURS DES COCKPITS GLOSSY QUAND UNE PÉDALE EST ACTIVE */
         .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #ffe066 0%, #ffcc00 45%, #d6aa00 50%, #e6b800 100%); border-color: #b38f00; color: #000; text-shadow: none; }
         .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #ffb347 0%, #ff9500 45%, #d67d00 50%, #e68600 100%); border-color: #b36200; }
         .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #ff6b63 0%, #ff453a 45%, #df2c22 50%, #eb3b30 100%); border-color: #b01e16; }
@@ -335,7 +327,7 @@
             background-color: rgba(255,255,255,0.5);
         }
 
-        /* SECTION DES RÉGLAGES */
+        /* RÉGLAGES DES POTENTIOMÈTRES ÉPURÉS ET MODERNES (SANS VISTA) */
         .zone-reglages-panel {
             width: 100%;
             max-width: 400px;
@@ -386,8 +378,8 @@
 
         .curseur-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: #0a84ff;
             cursor: pointer;
@@ -405,7 +397,7 @@
             font-weight: bold;
         }
 
-        /* MODAL POPUP VISTA */
+        /* POPUP CHOIX EFFETS MODERNES ET NETS (SANS VISTA) */
         .modal {
             display: none;
             position: fixed;
@@ -423,7 +415,7 @@
             max-width: 320px;
             border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.5);
             text-align: center;
         }
 
@@ -443,7 +435,7 @@
         }
 
         .btn-choix {
-            background: var(--bg-bouton-vista);
+            background-color: var(--bg-action-flat);
             border: 1px solid var(--border-couleur);
             border-radius: 8px;
             padding: 12px;
@@ -451,34 +443,24 @@
             color: #0a84ff;
             font-weight: 600;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .btn-choix::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: var(--reflet-glossy); pointer-events: none;
-        }
+        .btn-choix:active { background-color: var(--border-couleur); }
 
         .btn-eteindre {
             margin-top: 15px;
-            background: linear-gradient(to bottom, #555 0%, #3a3a3c 45%, #222 50%, #333 100%);
-            border: 1px solid #555;
-            color: #ff453a;
+            background-color: #ff3b30;
+            border: none;
+            color: white;
             border-radius: 8px;
             padding: 12px;
             width: 100%;
             font-weight: bold;
             font-size: 15px;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        .btn-eteindre::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
-            background: var(--reflet-glossy); pointer-events: none;
-        }
+        .btn-eteindre:active { background-color: #c72c24; }
     </style>
 </head>
 <body>
@@ -539,7 +521,7 @@
     </div>
 
     <script>
-        // Le script JavaScript reste identique pour conserver le fonctionnement exact
+        // Le code JavaScript reste inchangé et conserve ses fonctions intactes
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
