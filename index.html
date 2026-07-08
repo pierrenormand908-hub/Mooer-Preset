@@ -444,7 +444,7 @@
     </div>
 
     <script>
-        // MODÈLES DE PÉDALES À JOUR AVEC TOUS LES AMPLIS ET BAFFLES
+        // MODÈLES DE PÉDALES À JOUR
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
@@ -475,7 +475,7 @@
             ],
             'MOD': ['Chorus CE-2', 'Phase 90'],
             'DELAY': ['Digital Delay', 'Analog Delay'],
-            'REVERB': ['Hall Reverb', 'Spring Reverb'],
+            'REVERB': ['Room', 'Hall', 'Plate', 'Spring', 'Mod'],
             'COMP': ['Dynacomp', 'Studio Comp'],
             'EQ': ['7-Band Graphic']
         };
@@ -487,19 +487,24 @@
             'Auto Wah': ['Rate', 'Range', 'Peak', 'Level']
         };
 
-        // Ajouter Gain, Tone, Vol pour la catégorie OD
+        // Configuration OD
         modelesPedales.OD.forEach(modele => {
             structureReglages[modele] = ['Gain', 'Tone', 'Vol'];
         });
 
-        // Ajouter Gain, Bass, Mid, Treble, Presence, Master pour tous les modèles AMP
+        // Configuration AMP
         modelesPedales.AMP.forEach(modele => {
             structureReglages[modele] = ['Gain', 'Bass', 'Mid', 'Treble', 'Presence', 'Master'];
         });
 
-        // Configurer la catégorie CAB pour qu'elle renvoie un tableau vide (pas de réglages)
+        // Configuration CAB (pas de réglages)
         modelesPedales.CAB.forEach(modele => {
             structureReglages[modele] = [];
+        });
+
+        // Configuration REVERB (Pre Delay, Level, Decay, Tone)
+        modelesPedales.REVERB.forEach(modele => {
+            structureReglages[modele] = ['Pre Delay', 'Level', 'Decay', 'Tone'];
         });
 
         let presetsSauvegardes = {
@@ -660,7 +665,6 @@
             
             let listeParams = structureReglages[nomModele] || []; 
             
-            // Si la liste des paramètres est vide (comme pour CAB), on cache le panel
             if (listeParams.length === 0) {
                 panel.style.display = 'none';
                 return;
