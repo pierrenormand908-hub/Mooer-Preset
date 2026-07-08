@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Mooer Prime</title>
+    <title>Mooer Preset</title>
     
     <link class="apple-touch-icon" href="img/icon.png">
     <link rel="icon" type="image/png" href="img/icon.png">
@@ -22,7 +22,6 @@
             --texte-secondaire: #aeaeb2;
             --border-couleur: #4f4f52;
             --shadow-couleur: rgba(0,0,0,0.5);
-            /* Reflet initial adouci à 40% pour éviter la cassure brutale */
             --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0) 100%);
             
             --bg-action-flat: #3a3a3c;
@@ -238,7 +237,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* BLOC EFFET INDIVIDUEL */
         .bloc-effet {
             background: var(--bg-bouton-vista);
             border: 1px solid var(--border-couleur);
@@ -268,7 +266,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 100%; /* Couvre toute la hauteur pour lisser */
+            height: 100%; 
             background: var(--reflet-glossy);
             pointer-events: none;
             border-radius: 9px;
@@ -281,14 +279,12 @@
             filter: brightness(0.8);
         }
 
-        /* AJUSTEMENT DE L'ÉTAT ACTIF POUR ENLEVER LA LIGNE DU MILIEU */
         .bloc-effet.actif {
             transform: translateY(4px); 
             box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 4px 8px rgba(0, 0, 0, 0.5);
             filter: brightness(0.95);
         }
 
-        /* LE SECRET : On remplace le reflet sec par un dégradé très doux sur toute la hauteur */
         .bloc-effet.actif::after {
             background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 60%);
         }
@@ -319,7 +315,6 @@
             z-index: 2; 
         }
 
-        /* HARMONISATION DES DEGRADES SANS EFFET DE COUPURE AU MILIEU */
         .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #f7e492 0%, #cc9e00 100%); border-color: #806300; color: #000; text-shadow: none; }
         .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #f7bf7c 0%, #cc7200 100%); border-color: #804700; }
         .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #f78d85 0%, #cc2c20 100%); border-color: #80140d; }
@@ -336,7 +331,6 @@
             background-color: rgba(255,255,255,0.4);
         }
 
-        /* REGLAGES DES POTENTIOMETRES */
         .zone-reglages-panel {
             width: 100%;
             max-width: 400px;
@@ -406,7 +400,6 @@
             font-weight: bold;
         }
 
-        /* POPUP CHOIX EFFETS */
         .modal {
             display: none;
             position: fixed;
@@ -473,14 +466,13 @@
     </style>
 </head>
 <body>
-    <!-- Le reste du HTML et du Script reste identique -->
     <div class="wrapper-principal">
         <div class="barre-theme">
             <button class="btn-theme" onclick="changerTheme('light')">☀️</button>
             <button class="btn-theme" onclick="changerTheme('dark')">🌙</button>
         </div>
 
-        <h1>Mooer Prime</h1>
+        <h1>Mooer Preset</h1>
 
         <div class="selecteurs-container">
             <div class="colonne-preset">
@@ -522,7 +514,6 @@
     </div>
 
     <script>
-        // Ta logique JS (inchangée et fonctionnelle à 100%)
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
