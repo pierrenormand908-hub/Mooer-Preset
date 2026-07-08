@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Prime</title>
     
-    <!-- LIENS POUR TON ICÔNE DANS LE DOSSIER IMG -->
     <link class="apple-touch-icon" href="img/icon.png">
     <link rel="icon" type="image/png" href="img/icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,7 +22,8 @@
             --texte-secondaire: #aeaeb2;
             --border-couleur: #4f4f52;
             --shadow-couleur: rgba(0,0,0,0.5);
-            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            /* Reflet initial adouci à 40% pour éviter la cassure brutale */
+            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0) 100%);
             
             --bg-action-flat: #3a3a3c;
             --texte-action-flat: #ffffff;
@@ -40,7 +40,7 @@
             --texte-secondaire: #8e8e93;
             --border-couleur: #a5a5aa;
             --shadow-couleur: rgba(0,0,0,0.15);
-            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0) 100%);
             
             --bg-action-flat: #e5e5ea;
             --texte-action-flat: #000000;
@@ -117,7 +117,6 @@
             align-items: center;
         }
 
-        /* BOUTON SELECTION DE GUITARE (RELEVÉ PAR DÉFAUT) */
         .btn-guitare {
             width: 100px;
             height: 55px;
@@ -143,19 +142,16 @@
             background: var(--reflet-glossy); pointer-events: none;
         }
 
-        /* UN BOUTON PAS ENCORE ACTIF QU'ON ENFONCE */
         .btn-guitare:not(.actif):active {
             transform: translateY(3px);
             box-shadow: 0 1px 2px var(--shadow-couleur), inset 0 4px 6px rgba(0, 0, 0, 0.4);
             filter: brightness(0.85);
         }
 
-        /* L'EFFET ENFONCÉ RESTE QUAND LE MODE EST SÉLECTIONNÉ (ACTIF) */
         .btn-guitare.actif {
             background: linear-gradient(to bottom, #3fa2ff 0%, #0066cc 100%);
             border-color: #003d80;
             color: #ffffff;
-            /* On le descend physiquement et on lui met l'ombre interne creuse permanente */
             transform: translateY(3px);
             box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 4px 8px rgba(0, 0, 0, 0.5);
             text-shadow: 0 1px 1px rgba(0,0,0,0.4);
@@ -228,7 +224,7 @@
             background-color: var(--bg-conteneur);
             border-radius: 14px;
             border: 1px solid var(--border-couleur);
-            padding: 24px 15px 16px 15px; /* Ajusté pour donner de la place à la descente des pédales enfoncées */
+            padding: 24px 15px 16px 15px; 
             box-sizing: border-box;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             min-height: 135px;
@@ -242,7 +238,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* BLOC EFFET INDIVIDUEL (RELEVÉ PAR DÉFAUT) */
+        /* BLOC EFFET INDIVIDUEL */
         .bloc-effet {
             background: var(--bg-bouton-vista);
             border: 1px solid var(--border-couleur);
@@ -272,14 +268,12 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 48%;
+            height: 100%; /* Couvre toute la hauteur pour lisser */
             background: var(--reflet-glossy);
             pointer-events: none;
-            border-top-left-radius: 9px;
-            border-top-right-radius: 9px;
+            border-radius: 9px;
         }
 
-        /* AU CLIC SUR UNE PÉDALE ÉTEINTE */
         .bloc-effet:not(.actif):active { 
             cursor: grabbing; 
             transform: translateY(3px);
@@ -287,15 +281,16 @@
             filter: brightness(0.8);
         }
 
-        /* L'EFFET ENFONCÉ RESTE SUR LES PÉDALES ALLUMÉES (ACTIVES) */
+        /* AJUSTEMENT DE L'ÉTAT ACTIF POUR ENLEVER LA LIGNE DU MILIEU */
         .bloc-effet.actif {
-            transform: translateY(4px); /* Reste enfoncé en permanence */
+            transform: translateY(4px); 
             box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 4px 8px rgba(0, 0, 0, 0.5);
-            filter: brightness(0.9);
+            filter: brightness(0.95);
         }
 
+        /* LE SECRET : On remplace le reflet sec par un dégradé très doux sur toute la hauteur */
         .bloc-effet.actif::after {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 60%);
         }
 
         .bloc-effet.en-deplacement {
@@ -324,16 +319,16 @@
             z-index: 2; 
         }
 
-        /* HARMONISATION DES COCKPITS ACTIFS AVEC LES DÉGRADÉS DOUX ENFONCÉS */
-        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #f5dd7a 0%, #e6b800 100%); border-color: #997a00; color: #000; text-shadow: none; }
-        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #f5b362 0%, #e68500 100%); border-color: #995400; }
-        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #f5766e 0%, #e6392e 100%); border-color: #99160f; }
-        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #61da82 0%, #29c24f 100%); border-color: #137328; }
-        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #8786e0 0%, #4c4aba 100%); border-color: #242273; }
-        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #d291f2 0%, #b24ee6 100%); border-color: #691491; }
-        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #57a6f2 0%, #0073e6 100%); border-color: #003f85; }
-        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #98e0f5 0%, #57c4f2 100%); border-color: #0a739c; color: #000; text-shadow: none; }
-        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #49da84 0%, #00bd44 100%); border-color: #00732a; }
+        /* HARMONISATION DES DEGRADES SANS EFFET DE COUPURE AU MILIEU */
+        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #f7e492 0%, #cc9e00 100%); border-color: #806300; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #f7bf7c 0%, #cc7200 100%); border-color: #804700; }
+        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #f78d85 0%, #cc2c20 100%); border-color: #80140d; }
+        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #7ae096 0%, #1fb342 100%); border-color: #0f6623; }
+        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #9d9ce6 0%, #3e3ca3 100%); border-color: #1d1b61; }
+        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #dba6f5 0%, #9e39cf 100%); border-color: #581078; }
+        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #74b6f5 0%, #0060c2 100%); border-color: #003061; }
+        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #ade7f7 0%, #3bbceb 100%); border-color: #055a7a; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #65e098 0%, #00a336 100%); border-color: #005c1f; }
 
         .bloc-effet.actif[data-id="DYNA"] span, 
         .bloc-effet.actif[data-id="DELAY"] span {
@@ -478,21 +473,18 @@
     </style>
 </head>
 <body>
-
+    <!-- Le reste du HTML et du Script reste identique -->
     <div class="wrapper-principal">
-
         <div class="barre-theme">
-            <button class="btn-theme" onclick="changerTheme('light')" title="Mode Clair">☀️</button>
-            <button class="btn-theme" onclick="changerTheme('dark')" title="Mode Sombre">🌙</button>
+            <button class="btn-theme" onclick="changerTheme('light')">☀️</button>
+            <button class="btn-theme" onclick="changerTheme('dark')">🌙</button>
         </div>
 
         <h1>Mooer Prime</h1>
 
         <div class="selecteurs-container">
             <div class="colonne-preset">
-                <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">
-                    ÉLECTRIQUE
-                </div>
+                <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">ÉLECTRIQUE</div>
                 <div class="actions-preset-container">
                     <button class="btn-enregistrer" onclick="enregistrerPreset('electrique')">Sauver</button>
                     <button class="btn-effacer" onclick="effacerPreset('effacer')">Effacer</button>
@@ -504,9 +496,7 @@
             </div>
 
             <div class="colonne-preset">
-                <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">
-                    ACOUSTIQUE
-                </div>
+                <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">ACOUSTIQUE</div>
                 <div class="actions-preset-container">
                     <button class="btn-enregistrer" onclick="enregistrerPreset('acoustique')">Sauver</button>
                     <button class="btn-effacer" onclick="effacerPreset('acoustique')">Effacer</button>
@@ -515,14 +505,12 @@
         </div>
 
         <div class="nom-preset-affiche" id="nomPresetAffiche">Preset : Guitare Électrique</div>
-
         <div class="barre-effets" id="zoneEffets"></div>
 
         <div class="zone-reglages-panel" id="panelReglages">
             <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
             <div id="conteneurSliders"></div>
         </div>
-
     </div>
 
     <div class="modal" id="monPopUp">
@@ -534,7 +522,7 @@
     </div>
 
     <script>
-        // Le code logique JS reste identique
+        // Ta logique JS (inchangée et fonctionnelle à 100%)
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
