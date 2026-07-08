@@ -17,13 +17,14 @@
             --bg-principal: #1c1c1e;
             --bg-conteneur: #2c2c2e;
             --bg-bouton: #3a3a3c;
-            --bg-bouton-vista: linear-gradient(to bottom, #555557 0%, #3a3a3c 45%, #202022 50%, #2c2c2e 100%);
+            /* Dégradé adouci sans coupure nette au milieu */
+            --bg-bouton-vista: linear-gradient(to bottom, #4a4a4c 0%, #303032 50%, #202022 100%);
             --bg-bouton-actif: #48484a;
             --texte-principal: #ffffff;
             --texte-secondaire: #aeaeb2;
             --border-couleur: #4f4f52;
             --shadow-couleur: rgba(0,0,0,0.5);
-            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 48%, rgba(255,255,255,0) 50%);
+            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
             
             /* Pour les options épurées */
             --bg-action-flat: #3a3a3c;
@@ -35,13 +36,14 @@
             --bg-principal: #f2f2f7;
             --bg-conteneur: #ffffff;
             --bg-bouton: #e5e5ea;
-            --bg-bouton-vista: linear-gradient(to bottom, #ffffff 0%, #e5e5ea 45%, #ccccd0 50%, #d1d1d6 100%);
+            /* Dégradé adouci pour le mode clair */
+            --bg-bouton-vista: linear-gradient(to bottom, #ffffff 0%, #f2f2f7 50%, #d1d1d6 100%);
             --bg-bouton-actif: #b5b5ba;
             --texte-principal: #000000;
             --texte-secondaire: #8e8e93;
             --border-couleur: #a5a5aa;
             --shadow-couleur: rgba(0,0,0,0.15);
-            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0) 50%);
+            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
             
             /* Pour les options épurées */
             --bg-action-flat: #e5e5ea;
@@ -79,7 +81,6 @@
             margin-bottom: 5px;
         }
 
-        /* BOUTON THÈME MODERNE ET DISCRET */
         .btn-theme {
             background-color: var(--bg-bouton);
             border: none;
@@ -120,7 +121,7 @@
             align-items: center;
         }
 
-        /* BOUTON SELECTION DE GUITARE - STYLE VISTA */
+        /* BOUTON SELECTION DE GUITARE */
         .btn-guitare {
             width: 100px;
             height: 55px;
@@ -134,7 +135,7 @@
             font-weight: 700;
             color: var(--texte-principal);
             letter-spacing: 0.5px;
-            box-shadow: 0 3px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.2);
+            box-shadow: 0 3px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -146,12 +147,13 @@
             background: var(--reflet-glossy); pointer-events: none;
         }
 
+        /* ÉLECTRIQUE / ACOUSTIQUE SELECTIONNÉ : Dégradé bleu très doux */
         .btn-guitare.actif {
-            background: linear-gradient(to bottom, #3da1ff 0%, #007aff 45%, #005ec5 50%, #0076f7 100%);
+            background: linear-gradient(to bottom, #4fa4ff 0%, #007aff 50%, #0056b3 100%);
             border-color: #004b9c;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.5), inset 0 1px 2px rgba(255,255,255,0.5);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
 
         .rectangle-icone-central {
@@ -179,7 +181,6 @@
             width: 110px;
         }
 
-        /* BOUTONS ACTIONS SAUVER/EFFACER STYLE MODERNE FLAT */
         .btn-enregistrer, .btn-effacer {
             flex: 1;
             border: none;
@@ -235,7 +236,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* LE PÉDALIER : EFFETS STYLE BOUTONS BOMBES VISTA PLASTIQUE / GLOSSY */
+        /* BLOC EFFET INDIVIDUEL */
         .bloc-effet {
             background: var(--bg-bouton-vista);
             border: 1px solid var(--border-couleur);
@@ -257,11 +258,10 @@
             overflow: hidden;
             transition: all 0.15s ease;
             touch-action: none;
-            box-shadow: 0 4px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.2);
+            box-shadow: 0 4px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.1);
             text-shadow: 0 1px 1px rgba(0,0,0,0.5);
         }
 
-        /* Le reflet brillant plastique Vista */
         .bloc-effet::after {
             content: '';
             position: absolute;
@@ -275,13 +275,12 @@
 
         .bloc-effet:active { cursor: grabbing; }
 
-        /* État enfoncé / Allumé style Vista Aero */
         .bloc-effet.actif {
             transform: translateY(2px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.7), inset 0 2px 5px rgba(0,0,0,0.5);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.7), inset 0 2px 5px rgba(0,0,0,0.3);
         }
         .bloc-effet.actif::after {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.1) 100%);
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
         }
 
         .bloc-effet.en-deplacement {
@@ -310,24 +309,24 @@
             z-index: 2; 
         }
 
-        /* COULEURS DES COCKPITS GLOSSY QUAND UNE PÉDALE EST ACTIVE */
-        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #ffe066 0%, #ffcc00 45%, #d6aa00 50%, #e6b800 100%); border-color: #b38f00; color: #000; text-shadow: none; }
-        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #ffb347 0%, #ff9500 45%, #d67d00 50%, #e68600 100%); border-color: #b36200; }
-        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #ff6b63 0%, #ff453a 45%, #df2c22 50%, #eb3b30 100%); border-color: #b01e16; }
-        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #54e07a 0%, #30d158 45%, #1cb643 50%, #28c350 100%); border-color: #1a8a33; }
-        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #7a79e0 0%, #5856d6 45%, #413fb6 50%, #4c4abf 100%); border-color: #312f93; }
-        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #d382fc 0%, #bf5af2 45%, #9e36d1 50%, #ab42e2 100%); border-color: #7b1fa6; }
-        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #3da1ff 0%, #0a84ff 45%, #0066cc 50%, #0073e6 100%); border-color: #004da3; }
-        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #8ce2ff 0%, #64d2ff 45%, #32b7ea 50%, #49c2f5 100%); border-color: #1192c4; color: #000; text-shadow: none; }
-        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #34e078 0%, #00ca4e 45%, #00a33c 50%, #00b343 100%); border-color: #00802f; }
+        /* HARMONISATION DES COCKPITS ACTIFS : DEGRADES TRÈS DOUX (PROGRESSIFS SUR 100%) */
+        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #ffe885 0%, #ffcc00 100%); border-color: #b38f00; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #ffbe6b 0%, #ff9500 100%); border-color: #b36200; }
+        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #ff8078 0%, #ff453a 100%); border-color: #b01e16; }
+        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #69e88d 0%, #30d158 100%); border-color: #1a8a33; }
+        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #9291eb 0%, #5856d6 100%); border-color: #312f93; }
+        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #dd9cfd 0%, #bf5af2 100%); border-color: #7b1fa6; }
+        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #61b3ff 0%, #0a84ff 100%); border-color: #004da3; }
+        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #a3ebff 0%, #64d2ff 100%); border-color: #1192c4; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #52e690 0%, #00ca4e 100%); border-color: #00802f; }
 
         .bloc-effet.actif[data-id="DYNA"] span, 
         .bloc-effet.actif[data-id="DELAY"] span {
             color: #000000;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.4);
         }
 
-        /* RÉGLAGES DES POTENTIOMÈTRES ÉPURÉS ET MODERNES (SANS VISTA) */
+        /* REGLAGES DES POTENTIOMETRES */
         .zone-reglages-panel {
             width: 100%;
             max-width: 400px;
@@ -397,7 +396,7 @@
             font-weight: bold;
         }
 
-        /* POPUP CHOIX EFFETS MODERNES ET NETS (SANS VISTA) */
+        /* POPUP CHOIX EFFETS */
         .modal {
             display: none;
             position: fixed;
@@ -504,7 +503,6 @@
 
         <div class="barre-effets" id="zoneEffets"></div>
 
-        <!-- PANEL POUR LES POTENTIOMÈTRES COMPACTS -->
         <div class="zone-reglages-panel" id="panelReglages">
             <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
             <div id="conteneurSliders"></div>
@@ -521,7 +519,7 @@
     </div>
 
     <script>
-        // Le code JavaScript reste inchangé et conserve ses fonctions intactes
+        // Tout ton code logique JS est conservé au poil près
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
