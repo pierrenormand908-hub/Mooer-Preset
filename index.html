@@ -117,7 +117,7 @@
             align-items: center;
         }
 
-        /* BOUTON SELECTION DE GUITARE */
+        /* BOUTON SELECTION DE GUITARE (RELEVÉ PAR DÉFAUT) */
         .btn-guitare {
             width: 100px;
             height: 55px;
@@ -131,11 +131,11 @@
             font-weight: 700;
             color: var(--texte-principal);
             letter-spacing: 0.5px;
-            box-shadow: 0 3px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.1);
+            box-shadow: 0 4px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            transition: all 0.1s ease;
         }
 
         .btn-guitare::after {
@@ -143,27 +143,23 @@
             background: var(--reflet-glossy); pointer-events: none;
         }
 
-        /* EFFET ENFONCÉ ACCENTUÉ POUR LES BOUTONS GUITARE non-actifs */
-        .btn-guitare:active {
+        /* UN BOUTON PAS ENCORE ACTIF QU'ON ENFONCE */
+        .btn-guitare:not(.actif):active {
             transform: translateY(3px);
             box-shadow: 0 1px 2px var(--shadow-couleur), inset 0 4px 6px rgba(0, 0, 0, 0.4);
             filter: brightness(0.85);
         }
 
-        /* ÉLECTRIQUE / ACOUSTIQUE SELECTIONNÉ */
+        /* L'EFFET ENFONCÉ RESTE QUAND LE MODE EST SÉLECTIONNÉ (ACTIF) */
         .btn-guitare.actif {
-            background: linear-gradient(to bottom, #4fa4ff 0%, #007aff 50%, #0056b3 100%);
-            border-color: #004b9c;
+            background: linear-gradient(to bottom, #3fa2ff 0%, #0066cc 100%);
+            border-color: #003d80;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-        }
-
-        /* EFFET ENFONCÉ ACCENTUÉ POUR LE BOUTON GUITARE QUAND IL EST ACTIF */
-        .btn-guitare.actif:active {
+            /* On le descend physiquement et on lui met l'ombre interne creuse permanente */
             transform: translateY(3px);
-            box-shadow: 0 1px 3px rgba(0, 122, 255, 0.2), inset 0 4px 8px rgba(0, 0, 0, 0.5);
-            filter: brightness(0.8);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 4px 8px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+            filter: brightness(0.9);
         }
 
         .rectangle-icone-central {
@@ -232,7 +228,7 @@
             background-color: var(--bg-conteneur);
             border-radius: 14px;
             border: 1px solid var(--border-couleur);
-            padding: 20px 15px;
+            padding: 24px 15px 16px 15px; /* Ajusté pour donner de la place à la descente des pédales enfoncées */
             box-sizing: border-box;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             min-height: 135px;
@@ -246,7 +242,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* BLOC EFFET INDIVIDUEL */
+        /* BLOC EFFET INDIVIDUEL (RELEVÉ PAR DÉFAUT) */
         .bloc-effet {
             background: var(--bg-bouton-vista);
             border: 1px solid var(--border-couleur);
@@ -266,7 +262,7 @@
             cursor: grab;
             position: relative;
             overflow: hidden;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            transition: all 0.1s ease;
             touch-action: none;
             box-shadow: 0 4px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.1);
             text-shadow: 0 1px 1px rgba(0,0,0,0.5);
@@ -283,27 +279,23 @@
             border-top-right-radius: 9px;
         }
 
-        .bloc-effet:active { 
+        /* AU CLIC SUR UNE PÉDALE ÉTEINTE */
+        .bloc-effet:not(.actif):active { 
             cursor: grabbing; 
-            transform: translateY(3px) !important; /* Force l'enfoncement mécanique au clic */
-            box-shadow: 0 1px 2px var(--shadow-couleur), inset 0 4px 6px rgba(0, 0, 0, 0.5) !important;
+            transform: translateY(3px);
+            box-shadow: 0 1px 2px var(--shadow-couleur), inset 0 4px 6px rgba(0, 0, 0, 0.5);
             filter: brightness(0.8);
         }
 
+        /* L'EFFET ENFONCÉ RESTE SUR LES PÉDALES ALLUMÉES (ACTIVES) */
         .bloc-effet.actif {
-            /* État actif de base (pédale allumée) */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
-        }
-        
-        .bloc-effet.actif:active {
-            /* Pédale allumée ET enfoncée au clic */
-            transform: translateY(3px) !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset 0 5px 8px rgba(0,0,0,0.6) !important;
-            filter: brightness(0.75);
+            transform: translateY(4px); /* Reste enfoncé en permanence */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 4px 8px rgba(0, 0, 0, 0.5);
+            filter: brightness(0.9);
         }
 
         .bloc-effet.actif::after {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
         }
 
         .bloc-effet.en-deplacement {
@@ -332,16 +324,16 @@
             z-index: 2; 
         }
 
-        /* HARMONISATION DES COCKPITS ACTIFS */
-        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #ffe885 0%, #ffcc00 100%); border-color: #b38f00; color: #000; text-shadow: none; }
-        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #ffbe6b 0%, #ff9500 100%); border-color: #b36200; }
-        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #ff8078 0%, #ff453a 100%); border-color: #b01e16; }
-        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #69e88d 0%, #30d158 100%); border-color: #1a8a33; }
-        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #9291eb 0%, #5856d6 100%); border-color: #312f93; }
-        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #dd9cfd 0%, #bf5af2 100%); border-color: #7b1fa6; }
-        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #61b3ff 0%, #0a84ff 100%); border-color: #004da3; }
-        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #a3ebff 0%, #64d2ff 100%); border-color: #1192c4; color: #000; text-shadow: none; }
-        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #52e690 0%, #00ca4e 100%); border-color: #00802f; }
+        /* HARMONISATION DES COCKPITS ACTIFS AVEC LES DÉGRADÉS DOUX ENFONCÉS */
+        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #f5dd7a 0%, #e6b800 100%); border-color: #997a00; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #f5b362 0%, #e68500 100%); border-color: #995400; }
+        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #f5766e 0%, #e6392e 100%); border-color: #99160f; }
+        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #61da82 0%, #29c24f 100%); border-color: #137328; }
+        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #8786e0 0%, #4c4aba 100%); border-color: #242273; }
+        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #d291f2 0%, #b24ee6 100%); border-color: #691491; }
+        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #57a6f2 0%, #0073e6 100%); border-color: #003f85; }
+        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #98e0f5 0%, #57c4f2 100%); border-color: #0a739c; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #49da84 0%, #00bd44 100%); border-color: #00732a; }
 
         .bloc-effet.actif[data-id="DYNA"] span, 
         .bloc-effet.actif[data-id="DELAY"] span {
@@ -542,7 +534,7 @@
     </div>
 
     <script>
-        // Le code JS reste 100% identique et pleinement fonctionnel
+        // Le code logique JS reste identique
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
@@ -747,13 +739,14 @@
                     }
                 }, { passive: false });
 
-                bloc.addEventListener('touchend', (e) => {
-                    if (isDragging) {
-                        if (e.cancelable) e.preventDefault();
-                        bloc.classList.remove('en-deplacement');
-                        sauvegarderOrdreActuel();
-                        setTimeout(() => { isDragging = false; }, 50);
-                    }
+                blocs.forEach(b => {
+                    b.addEventListener('touchend', (e) => {
+                        if (isDragging) {
+                            b.classList.remove('en-deplacement');
+                            sauvegarderOrdreActuel();
+                            setTimeout(() => { isDragging = false; }, 50);
+                        }
+                    });
                 });
             });
         }
