@@ -227,47 +227,20 @@
         }
 
         /* 2. DEUXIÈME CADRE CREUSÉ : LA BAIE DES PÉDALES D'EFFET */
-        .barre-effets {
-            width: 100%;
-            max-width: 400px;
-            background-color: var(--bg-conteneur);
-            border-radius: 14px;
-            padding: 24px 15px 16px 15px; 
-            box-sizing: border-box;
-            min-height: 135px;
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-x: auto;
-            position: relative;
-            touch-action: pan-x; 
-            -webkit-overflow-scrolling: touch;
-
-            /* Bordures 3D et ombres internes pour creuser tout le tour */
-            border-top: 2px solid rgba(0, 0, 0, 0.8);
-            border-left: 2px solid rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            
-            box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.7), 
-                        inset 0 -2px 6px rgba(255, 255, 255, 0.05),
-                        0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-
+       .barre-effets {
+    /* ... tes autres propriétés existantes ... */
+    
+    /* Garde seulement les ombres internes (inset) pour l'effet creusé */
+    box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.7), 
+                inset 0 -2px 6px rgba(255, 255, 255, 0.05);
+}
         /* PANNEAU DE RÉGLAGES (D'ORIGINE, PAS TOUCHÉ) */
         .zone-reglages-panel {
-            width: 100%;
-            max-width: 400px;
-            background-color: var(--bg-conteneur);
-            border-radius: 14px;
-            border: 1px solid var(--border-couleur);
-            padding: 10px 12px;
-            margin-top: 15px;
-            box-sizing: border-box;
-            box-shadow: 0 4px 12px var(--shadow-couleur);
-            display: none;
-        }
+    /* ... tes autres propriétés existantes ... */
+    
+    /* Ajoute l'effet creusé */
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6);
+}
 
         .bloc-effet {
             background: var(--bg-bouton-vista);
