@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Prime</title>
     
-    <!-- 1. LIENS POUR TON ICÔNE PERSONNALISÉE (Place ton image icon.png dans le même dossier) -->
     <link rel="apple-touch-icon" href="img/icon.png">
     <link rel="icon" type="image/png" href="img/icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -42,14 +41,26 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-principal);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 0; /* On gère le padding dans le wrapper maintenant */
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden; 
             transition: background-color 0.3s ease;
+        }
+
+        /* ZONE SÉCURISÉE POUR L'ENCOCHE DE L'IPHONE */
+        .wrapper-principal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+            
+            /* Ajoute une marge automatique en haut pour l'heure/batterie si écran d'accueil, sinon 20px sur Safari */
+            padding-top: calc(20px + env(safe-area-inset-top)); 
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         .barre-theme {
@@ -192,7 +203,7 @@
             max-width: 400px;
             background-color: var(--bg-conteneur);
             border-radius: 16px;
-            padding: 25px 15px; /* Augmenté légèrement pour laisser de la place au relief */
+            padding: 25px 15px;
             box-sizing: border-box;
             box-shadow: 0 4px 15px var(--shadow-couleur);
             min-height: 135px;
@@ -206,7 +217,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* 3. STYLE EFFETS LOOK BOUTON/PÉDALE ENFONCÉE */
         .bloc-effet {
             background-color: var(--bg-bouton);
             border: 1px solid rgba(255,255,255,0.1);
@@ -227,18 +237,15 @@
             transition: all 0.15s ease;
             touch-action: none;
             text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-            
-            /* État relevé par défaut (Effet Éteint) */
             transform: translateY(-4px); 
             box-shadow: var(--shadow-bouton-off);
         }
 
         .bloc-effet:active { cursor: grabbing; }
 
-        /* État Enfoncé (Effet Actif) */
         .bloc-effet.actif {
-            transform: translateY(1px); /* S'enfonce visuellement */
-            box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 2px 4px rgba(0,0,0,0.4); /* Ombre écrasée + ombre interne */
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 2px 4px rgba(0,0,0,0.4);
         }
 
         .bloc-effet.en-deplacement {
@@ -247,7 +254,6 @@
             transform: scale(0.95) translateY(0);
         }
 
-        /* 2. TEXTE SUR DEUX LIGNES SI PLUS LONG */
         .bloc-effet span {
             font-size: 9px;
             font-weight: bold;
@@ -258,16 +264,15 @@
             max-height: 24px;
             overflow: hidden;
             display: -webkit-box;
-            -webkit-line-clamp: 2; /* Maximum 2 lignes */
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            white-space: normal; /* Permet le retour à la ligne */
+            white-space: normal;
             background-color: rgba(0,0,0,0.4);
             padding: 2px 0;
             border-radius: 4px;
             box-sizing: border-box;
         }
 
-        /* COULEURS DES PÉDALES ENFONCÉES (ACTIVES) */
         .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; color: #000000; text-shadow: none; }
         .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; color: #ffffff; }
         .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; color: #ffffff; }
@@ -284,7 +289,6 @@
             background-color: rgba(255,255,255,0.4);
         }
 
-        /* SECTION DES RÉGLAGES STYLE ME-80 COMPACT */
         .zone-reglages-panel {
             width: 100%;
             max-width: 400px;
@@ -353,7 +357,6 @@
             font-weight: bold;
         }
 
-        /* MODAL POPUP */
         .modal {
             display: none;
             position: fixed;
@@ -418,47 +421,50 @@
 </head>
 <body>
 
-    <div class="barre-theme">
-        <button class="btn-theme" onclick="changerTheme('light')" title="Mode Clair">☀️</button>
-        <button class="btn-theme" onclick="changerTheme('dark')" title="Mode Sombre">🌙</button>
-    </div>
+    <div class="wrapper-principal">
 
-    <h1>Mooer Prime</h1>
+        <div class="barre-theme">
+            <button class="btn-theme" onclick="changerTheme('light')" title="Mode Clair">☀️</button>
+            <button class="btn-theme" onclick="changerTheme('dark')" title="Mode Sombre">🌙</button>
+        </div>
 
-    <div class="selecteurs-container">
-        <div class="colonne-preset">
-            <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">
-                ÉLECTRIQUE
+        <h1>Mooer Prime</h1>
+
+        <div class="selecteurs-container">
+            <div class="colonne-preset">
+                <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">
+                    ÉLECTRIQUE
+                </div>
+                <div class="actions-preset-container">
+                    <button class="btn-enregistrer" onclick="enregistrerPreset('electrique')">Sauver</button>
+                    <button class="btn-effacer" onclick="effacerPreset('effacer')">Effacer</button>
+                </div>
             </div>
-            <div class="actions-preset-container">
-                <button class="btn-enregistrer" onclick="enregistrerPreset('electrique')">Sauver</button>
-                <button class="btn-effacer" onclick="effacerPreset('effacer')">Effacer</button>
+
+            <div class="rectangle-icone-central" id="zoneIconeCentrale">
+                <img src="img/electrique-removebg-preview.png" alt="Icône Guitare" class="mon-icone-png" id="imageGuitareCentrale">
+            </div>
+
+            <div class="colonne-preset">
+                <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">
+                    ACOUSTIQUE
+                </div>
+                <div class="actions-preset-container">
+                    <button class="btn-enregistrer" onclick="enregistrerPreset('acoustique')">Sauver</button>
+                    <button class="btn-effacer" onclick="effacerPreset('acoustique')">Effacer</button>
+                </div>
             </div>
         </div>
 
-        <div class="rectangle-icone-central" id="zoneIconeCentrale">
-            <img src="img/electrique-removebg-preview.png" alt="Icône Guitare" class="mon-icone-png" id="imageGuitareCentrale">
+        <div class="nom-preset-affiche" id="nomPresetAffiche">Preset : Guitare Électrique</div>
+
+        <div class="barre-effets" id="zoneEffets"></div>
+
+        <div class="zone-reglages-panel" id="panelReglages">
+            <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
+            <div id="conteneurSliders"></div>
         </div>
 
-        <div class="colonne-preset">
-            <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">
-                ACOUSTIQUE
-            </div>
-            <div class="actions-preset-container">
-                <button class="btn-enregistrer" onclick="enregistrerPreset('acoustique')">Sauver</button>
-                <button class="btn-effacer" onclick="effacerPreset('acoustique')">Effacer</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="nom-preset-affiche" id="nomPresetAffiche">Preset : Guitare Électrique</div>
-
-    <div class="barre-effets" id="zoneEffets"></div>
-
-    <!-- PANEL POUR LES POTENTIOMÈTRES COMPACTS -->
-    <div class="zone-reglages-panel" id="panelReglages">
-        <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
-        <div id="conteneurSliders"></div>
     </div>
 
     <div class="modal" id="monPopUp">
@@ -623,12 +629,9 @@
                 let categorie = bloc.getAttribute('data-id');
 
                 bloc.addEventListener('click', (e) => {
-                    if (!isDragging) {
-                        ouvrirPopUp(categorie, bloc);
-                    }
+                    if (!isDragging) { ouvrirPopUp(categorie, bloc); }
                 });
 
-                // SOURIS DRAG
                 bloc.addEventListener('dragstart', (e) => {
                     isDragging = true;
                     bloc.classList.add('en-deplacement');
@@ -641,7 +644,6 @@
                     sauvegarderOrdreActuel();
                 });
 
-                // TACTILE DRAG
                 let touchStartX, touchStartY;
                 bloc.addEventListener('touchstart', (e) => {
                     isDragging = false; 
@@ -692,7 +694,6 @@
         function afficherZoneSliders(categorie, nomModele) {
             const panel = document.getElementById('panelReglages');
             const conteneur = document.getElementById('conteneurSliders');
-            
             let listeParams = structureReglages[nomModele] || []; 
             
             if (listeParams.length === 0) {
@@ -786,6 +787,7 @@
 
         function fermerPopUp() { document.getElementById('monPopUp').style.display = 'none'; }
 
+        // Reste des fonctions inchangées
         function initDragAndDrop() {
             const conteneur = document.getElementById('zoneEffets');
             conteneur.addEventListener('dragover', (e) => {
@@ -838,9 +840,7 @@
             presetsSauvegardes[typeGuitare].ordre = typeGuitare === 'electrique' ? ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'] : ['COMP', 'EQ', 'REVERB'];
             presetsSauvegardes[typeGuitare].effets = {};
             presetsSauvegardes[typeGuitare].valeursParams = {};
-            
             presetsSauvegardes[typeGuitare].ordre.forEach(cat => { presetsSauvegardes[typeGuitare].effets[cat] = "Non défini"; });
-            
             localStorage.setItem('preset_' + typeGuitare + '_v2', JSON.stringify(presetsSauvegardes[typeGuitare]));
             if (modeActuel === typeGuitare) { changerMode(typeGuitare); }
             alert("Preset réinitialisé !");
