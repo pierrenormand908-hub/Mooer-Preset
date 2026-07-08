@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Preset</title>
     
+    <!-- CONFIGURATION DES ICÔNES AVEC LE BON NOM DE FICHIER -->
     <link rel="apple-touch-icon" href="img/Mooer_Preset.png">
     <link rel="icon" type="image/png" href="img/Mooer_Preset.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -613,7 +614,6 @@
             if (sauvegardeAcoust) { presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust); }
 
             changerMode('electrique');
-            initDragAndDrop();
         };
 
         function changerTheme(theme) {
@@ -719,14 +719,12 @@
                     }
                 }, { passive: false });
 
-                blocs.forEach(b => {
-                    b.addEventListener('touchend', (e) => {
-                        if (isDragging) {
-                            b.classList.remove('en-deplacement');
-                            sauvegarderOrdreActuel();
-                            setTimeout(() => { isDragging = false; }, 50);
-                        }
-                    });
+                bloc.addEventListener('touchend', (e) => {
+                    if (isDragging) {
+                        bloc.classList.remove('en-deplacement');
+                        sauvegarderOrdreActuel();
+                        setTimeout(() => { isDragging = false; }, 50);
+                    }
                 });
             });
         }
@@ -802,87 +800,66 @@
             document.getElementById('monPopUp').style.display = 'flex';
         }
 
-        function selectionnerModele(nomModele) {
+        function fermerPopUp() {
+            document.getElementById('monPopUp').style.display = 'none';
+        }
+
+        function selectionnerModele(modele) {
             if (elementEnCours) {
-                let spanSousTexte = elementEnCours.querySelector('.choix-actuel');
-                spanSousTexte.innerText = nomModele;
+                elementEnCours.classList.add('actif');
+                document.getElementById(`txt-${categorieEnCours}`).innerText = modele;
+                presetsSauvegardes[modeActuel].effets[categorieEnCours] = modele;
                 
-                if (nomModele !== "Non défini") {
-                    elementEnCours.classList.add('actif');
-                    afficherZoneSliders(categorieEnCours, nomModele);
-                } else {
-                    elementEnCours.classList.remove('actif');
-                    document.getElementById('panelReglages').style.display = 'none';
-                }
+                afficherZoneSliders(categorieEnCours, modele);
+                sauvegarderOrdreActuel();
             }
-            presetsSauvegardes[modeActuel].effets[categorieEnCours] = nomModele;
-            sauvegarderOrdreActuel();
             fermerPopUp();
         }
 
         function eteindreEffetActuel() {
-            if (categorieEnCours) { document.getElementById('panelReglages').style.display = 'none'; }
-            selectionnerModele("Non défini");
-        }
-
-        function fermerPopUp() { document.getElementById('monPopUp').style.display = 'none'; }
-
-        function initDragAndDrop() {
-            const conteneur = document.getElementById('zoneEffets');
-            conteneur.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                const blocEnDeplacement = document.querySelector('.en-deplacement');
-                if (!blocEnDeplacement) return;
-
-                const apresElement = obtenirElementApres(conteneur, e.clientX);
-                if (apresElement == null) {
-                    conteneur.appendChild(blocEnDeplacement);
-                } else {
-                    conteneur.insertBefore(blocEnDeplacement, apresElement);
-                }
-            });
-        }
-
-        function obtenirElementApres(conteneur, x) {
-            const elementsFixes = [...conteneur.querySelectorAll('.bloc-effet:not(.en-deplacement)')];
-            return elementsFixes.reduce((proche, enfant) => {
-                const boite = enfant.getBoundingClientRect();
-                const decalage = x - boite.left - boite.width / 2;
-                if (decalage < 0 && decalage > proche.decalage) {
-                    return { decalage: decalage, element: enfant };
-                } else {
-                    return proche;
-                }
-            }, { decalage: Number.NEGATIVE_INFINITY }).element;
+            if (elementEnCours) {
+                elementEnCours.classList.remove('actif');
+                document.getElementById(`txt-${categorieEnCours}`).innerText = "Non défini";
+                presetsSauvegardes[modeActuel].effets[categorieEnCours] = "Non défini";
+                
+                document.getElementById('panelReglages').style.display = 'none';
+                sauvegarderOrdreActuel();
+            }
+            fermerPopUp();
         }
 
         function sauvegarderOrdreActuel() {
             const blocs = document.querySelectorAll('.bloc-effet');
             let nouvelOrdre = [];
-            blocs.forEach(bloc => { nouvelOrdre.push(bloc.getAttribute('data-id')); });
+            blocs.forEach(b => {
+                nouvelOrdre.push(b.getAttribute('data-id'));
+            });
             presetsSauvegardes[modeActuel].ordre = nouvelOrdre;
-            localStorage.setItem('preset_' + modeActuel + '_v2', JSON.stringify(presetsSauvegardes[modeActuel]));
+            
+            let cleStorage = (modeActuel === 'electrique') ? 'preset_electrique_v2' : 'preset_acoustique_v2';
+            localStorage.setItem(cleStorage, JSON.stringify(presetsSauvegardes[modeActuel]));
         }
 
-        function enregistrerPreset(typeGuitare) {
-            let nomParDefaut = presetsSauvegardes[typeGuitare].nom;
-            let nouveauNom = prompt("Donne un nom à ton preset :", nomParDefaut);
-            if (nouveauNom !== null && nouveauNom.trim() !== "") {
-                presetsSauvegardes[typeGuitare].nom = nouveauNom;
-            }
+        function enregistrerPreset(mode) {
             sauvegarderOrdreActuel();
-            alert("Preset sauvegardé avec succès !");
+            alert(`Preset ${presetsSauvegardes[mode].nom} enregistré avec succès !`);
         }
 
-        function effacerPreset(typeGuitare) {
-            presetsSauvegardes[typeGuitare].nom = typeGuitare === 'electrique' ? 'Guitare Électrique' : 'Guitare Acoustique';
-            presetsSauvegardes[typeGuitare].ordre = typeGuitare === 'electrique' ? ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'] : ['COMP', 'EQ', 'REVERB'];
-            presetsSauvegardes[typeGuitare].effets = {};
-            presetsSauvegardes[typeGuitare].valeursParams = {};
-            presetsSauvegardes[typeGuitare].ordre.forEach(cat => { presetsSauvegardes[typeGuitare].effets[cat] = "Non défini"; });
-            localStorage.setItem('preset_' + typeGuitare + '_v2', JSON.stringify(presetsSauvegardes[typeGuitare]));
-            if (modeActuel === typeGuitare) { changerMode(typeGuitare); }
-            alert("Preset réinitialisé !");
+        function effacerPreset(mode) {
+            if (confirm("Réinitialiser ce preset ?")) {
+                if (modeActuel === 'electrique') {
+                    localStorage.removeItem('preset_electrique_v2');
+                    presetsSauvegardes.electrique.effets = { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' };
+                    presetsSauvegardes.electrique.ordre = ['DYNA', 'AMP', 'CAB', 'OD', 'MOD', 'DELAY', 'REVERB'];
+                    presetsSauvegardes.electrique.valeursParams = {};
+                } else {
+                    localStorage.removeItem('preset_acoustique_v2');
+                    presetsSauvegardes.acoustique.effets = { 'COMP': 'Non défini', 'EQ': 'Non défini', 'REVERB': 'Non défini' };
+                    presetsSauvegardes.acoustique.ordre = ['COMP', 'EQ', 'REVERB'];
+                    presetsSauvegardes.acoustique.valeursParams = {};
+                }
+                changerMode(modeActuel);
+            }
         }
     </script>
 </body>
