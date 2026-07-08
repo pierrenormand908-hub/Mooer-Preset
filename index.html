@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Prime</title>
+    
+    <!-- 1. LIENS POUR TON ICÔNE PERSONNALISÉE (Place ton image icon.png dans le même dossier) -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
         /* THÈME SOMBRE (PAR DÉFAUT) */
         :root {
@@ -14,7 +21,8 @@
             --texte-principal: #ffffff;
             --texte-secondaire: #aeaeb2;
             --border-couleur: #3a3a3c;
-            --shadow-couleur: rgba(0,0,0,0.25);
+            --shadow-couleur: rgba(0,0,0,0.4);
+            --shadow-bouton-off: 0 5px 0px #151517, 0 6px 10px rgba(0,0,0,0.5);
         }
 
         /* THÈME CLAIR */
@@ -27,6 +35,7 @@
             --texte-secondaire: #8e8e93;
             --border-couleur: #e5e5ea;
             --shadow-couleur: rgba(0,0,0,0.1);
+            --shadow-bouton-off: 0 5px 0px #b5b5ba, 0 6px 10px rgba(0,0,0,0.2);
         }
 
         body {
@@ -183,12 +192,12 @@
             max-width: 400px;
             background-color: var(--bg-conteneur);
             border-radius: 16px;
-            padding: 20px 15px;
+            padding: 25px 15px; /* Augmenté légèrement pour laisser de la place au relief */
             box-sizing: border-box;
             box-shadow: 0 4px 15px var(--shadow-couleur);
-            min-height: 120px;
+            min-height: 135px;
             display: flex;
-            gap: 12px;
+            gap: 14px;
             align-items: center;
             justify-content: flex-start;
             overflow-x: auto;
@@ -197,65 +206,82 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* 3. STYLE EFFETS LOOK BOUTON/PÉDALE ENFONCÉE */
         .bloc-effet {
             background-color: var(--bg-bouton);
-            border: 2px solid var(--bg-bouton-actif);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            font-size: 12px;
+            justify-content: space-between;
+            padding: 6px 4px;
+            box-sizing: border-box;
+            font-size: 11px;
             font-weight: bold;
             color: var(--texte-principal);
             flex-shrink: 0;
             cursor: grab;
-            box-shadow: 0 2px 4px var(--shadow-couleur);
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             touch-action: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+            
+            /* État relevé par défaut (Effet Éteint) */
+            transform: translateY(-4px); 
+            box-shadow: var(--shadow-bouton-off);
         }
 
         .bloc-effet:active { cursor: grabbing; }
 
+        /* État Enfoncé (Effet Actif) */
+        .bloc-effet.actif {
+            transform: translateY(1px); /* S'enfonce visuellement */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 2px 4px rgba(0,0,0,0.4); /* Ombre écrasée + ombre interne */
+        }
+
         .bloc-effet.en-deplacement {
             opacity: 0.5;
             border: 2px dashed #0a84ff !important;
-            transform: scale(0.95);
+            transform: scale(0.95) translateY(0);
         }
 
+        /* 2. TEXTE SUR DEUX LIGNES SI PLUS LONG */
         .bloc-effet span {
             font-size: 9px;
             font-weight: bold;
             color: #e5e5ea;
-            margin-top: 5px;
+            line-height: 1.1;
             text-align: center;
-            max-width: 65px;
+            width: 100%;
+            max-height: 24px;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Maximum 2 lignes */
+            -webkit-box-orient: vertical;
+            white-space: normal; /* Permet le retour à la ligne */
             background-color: rgba(0,0,0,0.4);
-            padding: 2px 5px;
+            padding: 2px 0;
             border-radius: 4px;
+            box-sizing: border-box;
         }
 
-        /* COULEURS DES PÉDALES */
-        .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; border-color: #ffd60a; color: #000000; text-shadow: none; }
-        .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; border-color: #ff9f0a; color: #ffffff; }
-        .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; border-color: #ff453a; color: #ffffff; }
-        .bloc-effet.actif[data-id="AMP"]    { background-color: #30d158; border-color: #34c759; color: #ffffff; }
-        .bloc-effet.actif[data-id="EQ"]     { background-color: #5856d6; border-color: #5e5ce6; color: #ffffff; }
-        .bloc-effet.actif[data-id="CAB"]    { background-color: #bf5af2; border-color: #c670f5; color: #ffffff; }
-        .bloc-effet.actif[data-id="MOD"]    { background-color: #0a84ff; border-color: #0a84ff; color: #ffffff; }
-        .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; border-color: #70d6ff; color: #000000; text-shadow: none; }
-        .bloc-effet.actif[data-id="REVERB"] { background-color: #00ca4e; border-color: #00ca4e; color: #ffffff; }
+        /* COULEURS DES PÉDALES ENFONCÉES (ACTIVES) */
+        .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; color: #000000; text-shadow: none; }
+        .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; color: #ffffff; }
+        .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; color: #ffffff; }
+        .bloc-effet.actif[data-id="AMP"]    { background-color: #30d158; color: #ffffff; }
+        .bloc-effet.actif[data-id="EQ"]     { background-color: #5856d6; color: #ffffff; }
+        .bloc-effet.actif[data-id="CAB"]    { background-color: #bf5af2; color: #ffffff; }
+        .bloc-effet.actif[data-id="MOD"]    { background-color: #0a84ff; color: #ffffff; }
+        .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; color: #000000; text-shadow: none; }
+        .bloc-effet.actif[data-id="REVERB"] { background-color: #00ca4e; color: #ffffff; }
 
         .bloc-effet.actif[data-id="DYNA"] span, 
         .bloc-effet.actif[data-id="DELAY"] span {
             color: #000000;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.4);
         }
 
         /* SECTION DES RÉGLAGES STYLE ME-80 COMPACT */
@@ -444,7 +470,6 @@
     </div>
 
     <script>
-        // MODÈLES DE PÉDALES À JOUR
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
@@ -491,32 +516,12 @@
             'Auto Wah': ['Rate', 'Range', 'Peak', 'Level']
         };
 
-        // Configuration OD
-        modelesPedales.OD.forEach(modele => {
-            structureReglages[modele] = ['Gain', 'Tone', 'Vol'];
-        });
+        modelesPedales.OD.forEach(modele => { structureReglages[modele] = ['Gain', 'Tone', 'Vol']; });
+        modelesPedales.AMP.forEach(modele => { structureReglages[modele] = ['Gain', 'Bass', 'Mid', 'Treble', 'Presence', 'Master']; });
+        modelesPedales.CAB.forEach(modele => { structureReglages[modele] = []; });
+        modelesPedales.REVERB.forEach(modele => { structureReglages[modele] = ['Pre Delay', 'Level', 'Decay', 'Tone']; });
+        modelesPedales.DELAY.forEach(modele => { structureReglages[modele] = ['Level', 'Feedback', 'Time']; });
 
-        // Configuration AMP
-        modelesPedales.AMP.forEach(modele => {
-            structureReglages[modele] = ['Gain', 'Bass', 'Mid', 'Treble', 'Presence', 'Master'];
-        });
-
-        // Configuration CAB
-        modelesPedales.CAB.forEach(modele => {
-            structureReglages[modele] = [];
-        });
-
-        // Configuration REVERB
-        modelesPedales.REVERB.forEach(modele => {
-            structureReglages[modele] = ['Pre Delay', 'Level', 'Decay', 'Tone'];
-        });
-
-        // Configuration DELAY
-        modelesPedales.DELAY.forEach(modele => {
-            structureReglages[modele] = ['Level', 'Feedback', 'Time'];
-        });
-
-        // Configuration MOD SUR MESURE
         structureReglages['Phaser']      = ['Rate', 'Level', 'Depth'];
         structureReglages['Step Phaser'] = ['Rate', 'Level', 'Depth'];
         structureReglages['Flanger']     = ['Rate', 'Level', 'Feedback'];
@@ -575,7 +580,6 @@
             modeActuel = mode;
             document.getElementById('btn-elec').classList.remove('actif');
             document.getElementById('btn-acoust').classList.remove('actif');
-            
             document.getElementById('nomPresetAffiche').innerText = "Preset : " + presetsSauvegardes[mode].nom;
             
             let imageElement = document.getElementById('imageGuitareCentrale');
@@ -699,15 +703,10 @@
             document.getElementById('titreReglages').innerText = `Contrôles : ${categorie} (${nomModele})`;
             let htmlSliders = '';
             
-            if (!presetsSauvegardes[modeActuel].valeursParams) {
-                presetsSauvegardes[modeActuel].valeursParams = {};
-            }
-            if (!presetsSauvegardes[modeActuel].valeursParams[nomModele]) {
-                presetsSauvegardes[modeActuel].valeursParams[nomModele] = {};
-            }
+            if (!presetsSauvegardes[modeActuel].valeursParams) { presetsSauvegardes[modeActuel].valeursParams = {}; }
+            if (!presetsSauvegardes[modeActuel].valeursParams[nomModele]) { presetsSauvegardes[modeActuel].valeursParams[nomModele] = {}; }
 
             listeParams.forEach(param => {
-                // Règle d'amplitude : 0 à 1000 pour Time, sinon 0 à 100
                 let maxBorne = (param === 'Time') ? 1000 : 100;
                 let valeurParDefaut = (param === 'Time') ? 350 : 50;
 
@@ -781,15 +780,11 @@
         }
 
         function eteindreEffetActuel() {
-            if (categorieEnCours) {
-                document.getElementById('panelReglages').style.display = 'none';
-            }
+            if (categorieEnCours) { document.getElementById('panelReglages').style.display = 'none'; }
             selectionnerModele("Non défini");
         }
 
-        function fermerPopUp() {
-            document.getElementById('monPopUp').style.display = 'none';
-        }
+        function fermerPopUp() { document.getElementById('monPopUp').style.display = 'none'; }
 
         function initDragAndDrop() {
             const conteneur = document.getElementById('zoneEffets');
@@ -823,9 +818,7 @@
         function sauvegarderOrdreActuel() {
             const blocs = document.querySelectorAll('.bloc-effet');
             let nouvelOrdre = [];
-            blocs.forEach(bloc => {
-                nouvelOrdre.push(bloc.getAttribute('data-id'));
-            });
+            blocs.forEach(bloc => { nouvelOrdre.push(bloc.getAttribute('data-id')); });
             presetsSauvegardes[modeActuel].ordre = nouvelOrdre;
             localStorage.setItem('preset_' + modeActuel + '_v2', JSON.stringify(presetsSauvegardes[modeActuel]));
         }
@@ -846,14 +839,10 @@
             presetsSauvegardes[typeGuitare].effets = {};
             presetsSauvegardes[typeGuitare].valeursParams = {};
             
-            presetsSauvegardes[typeGuitare].ordre.forEach(cat => {
-                presetsSauvegardes[typeGuitare].effets[cat] = "Non défini";
-            });
+            presetsSauvegardes[typeGuitare].ordre.forEach(cat => { presetsSauvegardes[typeGuitare].effets[cat] = "Non défini"; });
             
             localStorage.setItem('preset_' + typeGuitare + '_v2', JSON.stringify(presetsSauvegardes[typeGuitare]));
-            if (modeActuel === typeGuitare) {
-                changerMode(typeGuitare);
-            }
+            if (modeActuel === typeGuitare) { changerMode(typeGuitare); }
             alert("Preset réinitialisé !");
         }
     </script>
