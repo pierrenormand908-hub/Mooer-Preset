@@ -473,7 +473,11 @@
                 'Eagle P412', 'Eagle S412', 'Rec 412', 'Citrus 412', 'Slow 412', 
                 'PV 5050 412', 'EV 5050 412', 'HT 412', 'Diesel 412'
             ],
-            'MOD': ['Chorus CE-2', 'Phase 90'],
+            'MOD': [
+                'Phaser', 'Step Phaser', 'Flanger', 'Jet Flanger', 'Tremolo', 
+                'Stutter', 'Vibrato', 'Pitch Shift', 'Rotary', 'Ana Chorus', 
+                'Tri Chorus', 'Ring', 'Q - Filter', 'Lofi', 'Slow Gear'
+            ],
             'DELAY': ['Digital', 'Analog', 'Real Echo', 'Tape', 'Mod', 'Reverse'],
             'REVERB': ['Room', 'Hall', 'Plate', 'Spring', 'Mod'],
             'COMP': ['Dynacomp', 'Studio Comp'],
@@ -507,10 +511,27 @@
             structureReglages[modele] = ['Pre Delay', 'Level', 'Decay', 'Tone'];
         });
 
-        // Configuration DELAY (Level, Feedback, Time)
+        // Configuration DELAY
         modelesPedales.DELAY.forEach(modele => {
             structureReglages[modele] = ['Level', 'Feedback', 'Time'];
         });
+
+        // Configuration MOD SUR MESURE
+        structureReglages['Phaser']      = ['Rate', 'Level', 'Depth'];
+        structureReglages['Step Phaser'] = ['Rate', 'Level', 'Depth'];
+        structureReglages['Flanger']     = ['Rate', 'Level', 'Feedback'];
+        structureReglages['Jet Flanger'] = ['Rate', 'Level', 'Feedback'];
+        structureReglages['Tremolo']     = ['Rate', 'Level', 'Tone'];
+        structureReglages['Stutter']     = ['Rate', 'Level', 'Tone'];
+        structureReglages['Vibrato']     = ['Rate', 'Level', 'Tone'];
+        structureReglages['Pitch Shift'] = ['Mix', 'Tone', 'Pitch'];
+        structureReglages['Rotary']      = ['Rate', 'Mix', 'Tone'];
+        structureReglages['Ana Chorus']  = ['Rate', 'Mix', 'Tone', 'Depth'];
+        structureReglages['Tri Chorus']  = ['Rate', 'Mix', 'Tone', 'Depth'];
+        structureReglages['Ring']        = ['Rate', 'Mix', 'Tone'];
+        structureReglages['Q - Filter']  = ['Rate', 'Mix', 'Q'];
+        structureReglages['Lofi']        = ['Sample', 'Mix', 'Bit'];
+        structureReglages['Slow Gear']   = ['Rise', 'Level'];
 
         let presetsSauvegardes = {
             electrique: {
@@ -686,7 +707,7 @@
             }
 
             listeParams.forEach(param => {
-                // Règle spécifique pour l'amplitude : 0 à 1000 pour Time, sinon 0 à 100
+                // Règle d'amplitude : 0 à 1000 pour Time, sinon 0 à 100
                 let maxBorne = (param === 'Time') ? 1000 : 100;
                 let valeurParDefaut = (param === 'Time') ? 350 : 50;
 
