@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mooer Prime</title>
     
-    <link rel="apple-touch-icon" href="img/Mooer_Preset.png">
-    <link rel="icon" type="image/png" href="img/Mooer_Preset.png">
+    <!-- LIENS POUR TON ICÔNE DANS LE DOSSIER IMG -->
+    <link class="apple-touch-icon" href="img/icon.png">
+    <link rel="icon" type="image/png" href="img/icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -16,12 +17,13 @@
             --bg-principal: #1c1c1e;
             --bg-conteneur: #2c2c2e;
             --bg-bouton: #3a3a3c;
+            --bg-bouton-vista: linear-gradient(to bottom, #555557 0%, #3a3a3c 45%, #202022 50%, #2c2c2e 100%);
             --bg-bouton-actif: #48484a;
             --texte-principal: #ffffff;
             --texte-secondaire: #aeaeb2;
-            --border-couleur: #3a3a3c;
-            --shadow-couleur: rgba(0,0,0,0.4);
-            --shadow-bouton-off: 0 5px 0px #151517, 0 6px 10px rgba(0,0,0,0.5);
+            --border-couleur: #4f4f52;
+            --shadow-couleur: rgba(0,0,0,0.5);
+            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 48%, rgba(255,255,255,0) 50%);
         }
 
         /* THÈME CLAIR */
@@ -29,34 +31,32 @@
             --bg-principal: #f2f2f7;
             --bg-conteneur: #ffffff;
             --bg-bouton: #e5e5ea;
-            --bg-bouton-actif: #d1d1d6;
+            --bg-bouton-vista: linear-gradient(to bottom, #ffffff 0%, #e5e5ea 45%, #ccccd0 50%, #d1d1d6 100%);
+            --bg-bouton-actif: #b5b5ba;
             --texte-principal: #000000;
             --texte-secondaire: #8e8e93;
-            --border-couleur: #e5e5ea;
-            --shadow-couleur: rgba(0,0,0,0.1);
-            --shadow-bouton-off: 0 5px 0px #b5b5ba, 0 6px 10px rgba(0,0,0,0.2);
+            --border-couleur: #a5a5aa;
+            --shadow-couleur: rgba(0,0,0,0.15);
+            --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0) 50%);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-principal);
             margin: 0;
-            padding: 0; /* On gère le padding dans le wrapper maintenant */
+            padding: 0;
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden; 
             transition: background-color 0.3s ease;
         }
 
-        /* ZONE SÉCURISÉE POUR L'ENCOCHE DE L'IPHONE */
         .wrapper-principal {
             display: flex;
             flex-direction: column;
             align-items: center;
             box-sizing: border-box;
             width: 100%;
-            
-            /* Ajoute une marge automatique en haut pour l'heure/batterie si écran d'accueil, sinon 20px sur Safari */
             padding-top: calc(20px + env(safe-area-inset-top)); 
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
             padding-left: 20px;
@@ -71,8 +71,9 @@
             margin-bottom: 5px;
         }
 
+        /* STYLE BOUTON THÈME VISTA */
         .btn-theme {
-            background-color: var(--bg-conteneur);
+            background: var(--bg-bouton-vista);
             border: 1px solid var(--border-couleur);
             border-radius: 50%;
             width: 36px;
@@ -82,17 +83,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 4px var(--shadow-couleur);
-            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
         }
-        .btn-theme:active { transform: scale(0.9); }
+        .btn-theme::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: var(--reflet-glossy); pointer-events: none;
+        }
+        .btn-theme:active { transform: scale(0.95); }
 
         h1 {
             font-size: 22px;
             color: var(--texte-principal);
             margin-top: 0;
             margin-bottom: 25px;
-            transition: color 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         .selecteurs-container {
@@ -112,41 +118,50 @@
             align-items: center;
         }
 
+        /* BOUTON GUITARE VISTA AERO */
         .btn-guitare {
             width: 100px;
             height: 55px;
-            background-color: var(--bg-conteneur);
-            border: 2px solid var(--border-couleur);
-            border-radius: 12px;
+            background: var(--bg-bouton-vista);
+            border: 1px solid var(--border-couleur);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--texte-principal);
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 6px var(--shadow-couleur);
+            box-shadow: 0 3px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.2);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
             transition: all 0.2s ease;
         }
 
+        .btn-guitare::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: var(--reflet-glossy); pointer-events: none;
+        }
+
         .btn-guitare.actif {
-            background-color: #0a84ff;
-            border-color: #0a84ff;
+            background: linear-gradient(to bottom, #3da1ff 0%, #007aff 45%, #005ec5 50%, #0076f7 100%);
+            border-color: #004b9c;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.5), inset 0 1px 2px rgba(255,255,255,0.5);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
         }
 
         .rectangle-icone-central {
             width: 45px; 
             height: 88px;
-            border: 2px solid var(--border-couleur);
-            border-radius: 10px;
+            border: 1px solid var(--border-couleur);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--bg-conteneur);
-            box-shadow: inset 0 2px 4px var(--shadow-couleur);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
             overflow: hidden;
         }
 
@@ -162,32 +177,41 @@
             width: 110px;
         }
 
+        /* PETITS BOUTONS STYLE VISTA */
         .btn-enregistrer, .btn-effacer {
             flex: 1;
             color: white;
-            border: none;
-            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.3);
+            border-radius: 6px;
             padding: 0;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 4px var(--shadow-couleur);
             height: 30px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.3);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.4);
         }
 
-        .btn-enregistrer { background-color: #30d158; }
-        .btn-enregistrer:active { background-color: #248a3d; }
+        .btn-enregistrer::after, .btn-effacer::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%); pointer-events: none;
+        }
 
-        .btn-effacer { background-color: #ff453a; }
-        .btn-effacer:active { background-color: #c72c24; }
+        .btn-enregistrer { background: linear-gradient(to bottom, #54e07a 0%, #30d158 45%, #1cb643 50%, #28c350 100%); border-color: #1a8a33; }
+        .btn-enregistrer:active { transform: scale(0.96); }
+
+        .btn-effacer { background: linear-gradient(to bottom, #ff6b63 0%, #ff453a 45%, #df2c22 50%, #eb3b30 100%); border-color: #b01e16; }
+        .btn-effacer:active { transform: scale(0.96); }
 
         .nom-preset-affiche {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             color: #0a84ff;
             margin-bottom: 12px;
             text-transform: uppercase;
@@ -195,17 +219,19 @@
             background-color: var(--bg-conteneur);
             padding: 6px 14px;
             border-radius: 20px;
-            box-shadow: 0 2px 4px var(--shadow-couleur);
+            border: 1px solid var(--border-couleur);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .barre-effets {
             width: 100%;
             max-width: 400px;
             background-color: var(--bg-conteneur);
-            border-radius: 16px;
-            padding: 25px 15px;
+            border-radius: 14px;
+            border: 1px solid var(--border-couleur);
+            padding: 20px 15px;
             box-sizing: border-box;
-            box-shadow: 0 4px 15px var(--shadow-couleur);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0px rgba(255,255,255,0.1);
             min-height: 135px;
             display: flex;
             gap: 14px;
@@ -217,12 +243,13 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* EFFETS STYLE BOUTONS BOMBES VISTA PLASTIQUE / GLOSSY */
         .bloc-effet {
-            background-color: var(--bg-bouton);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            width: 72px;
-            height: 72px;
+            background: var(--bg-bouton-vista);
+            border: 1px solid var(--border-couleur);
+            border-radius: 10px;
+            width: 74px;
+            height: 74px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -234,30 +261,47 @@
             color: var(--texte-principal);
             flex-shrink: 0;
             cursor: grab;
+            position: relative;
+            overflow: hidden;
             transition: all 0.15s ease;
             touch-action: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-            transform: translateY(-4px); 
-            box-shadow: var(--shadow-bouton-off);
+            box-shadow: 0 4px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.2);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+        }
+
+        /* Le fameux reflet plastique blanc Vista */
+        .bloc-effet::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 48%;
+            background: var(--reflet-glossy);
+            pointer-events: none;
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
         }
 
         .bloc-effet:active { cursor: grabbing; }
 
+        /* État enfoncé / Allumé style Vista Aero */
         .bloc-effet.actif {
-            transform: translateY(1px);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 2px 4px rgba(0,0,0,0.4);
+            transform: translateY(2px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.7), inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .bloc-effet.actif::after {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.1) 100%);
         }
 
         .bloc-effet.en-deplacement {
-            opacity: 0.5;
+            opacity: 0.4;
             border: 2px dashed #0a84ff !important;
-            transform: scale(0.95) translateY(0);
+            transform: scale(0.95);
         }
 
         .bloc-effet span {
             font-size: 9px;
-            font-weight: bold;
-            color: #e5e5ea;
+            font-weight: 800;
+            color: #ffffff;
             line-height: 1.1;
             text-align: center;
             width: 100%;
@@ -267,33 +311,37 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             white-space: normal;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.5);
             padding: 2px 0;
             border-radius: 4px;
             box-sizing: border-box;
+            z-index: 2; /* Reste visible sous le reflet */
         }
 
-        .bloc-effet.actif[data-id="DYNA"]   { background-color: #ffcc00; color: #000000; text-shadow: none; }
-        .bloc-effet.actif[data-id="COMP"]   { background-color: #ff9500; color: #ffffff; }
-        .bloc-effet.actif[data-id="OD"]     { background-color: #ff453a; color: #ffffff; }
-        .bloc-effet.actif[data-id="AMP"]    { background-color: #30d158; color: #ffffff; }
-        .bloc-effet.actif[data-id="EQ"]     { background-color: #5856d6; color: #ffffff; }
-        .bloc-effet.actif[data-id="CAB"]    { background-color: #bf5af2; color: #ffffff; }
-        .bloc-effet.actif[data-id="MOD"]    { background-color: #0a84ff; color: #ffffff; }
-        .bloc-effet.actif[data-id="DELAY"]  { background-color: #64d2ff; color: #000000; text-shadow: none; }
-        .bloc-effet.actif[data-id="REVERB"] { background-color: #00ca4e; color: #ffffff; }
+        /* COULEURS DES COCKPITS GLOSSY (ACTIFS) */
+        .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #ffe066 0%, #ffcc00 45%, #d6aa00 50%, #e6b800 100%); border-color: #b38f00; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #ffb347 0%, #ff9500 45%, #d67d00 50%, #e68600 100%); border-color: #b36200; }
+        .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #ff6b63 0%, #ff453a 45%, #df2c22 50%, #eb3b30 100%); border-color: #b01e16; }
+        .bloc-effet.actif[data-id="AMP"]    { background: linear-gradient(to bottom, #54e07a 0%, #30d158 45%, #1cb643 50%, #28c350 100%); border-color: #1a8a33; }
+        .bloc-effet.actif[data-id="EQ"]     { background: linear-gradient(to bottom, #7a79e0 0%, #5856d6 45%, #413fb6 50%, #4c4abf 100%); border-color: #312f93; }
+        .bloc-effet.actif[data-id="CAB"]    { background: linear-gradient(to bottom, #d382fc 0%, #bf5af2 45%, #9e36d1 50%, #ab42e2 100%); border-color: #7b1fa6; }
+        .bloc-effet.actif[data-id="MOD"]    { background: linear-gradient(to bottom, #3da1ff 0%, #0a84ff 45%, #0066cc 50%, #0073e6 100%); border-color: #004da3; }
+        .bloc-effet.actif[data-id="DELAY"]  { background: linear-gradient(to bottom, #8ce2ff 0%, #64d2ff 45%, #32b7ea 50%, #49c2f5 100%); border-color: #1192c4; color: #000; text-shadow: none; }
+        .bloc-effet.actif[data-id="REVERB"] { background: linear-gradient(to bottom, #34e078 0%, #00ca4e 45%, #00a33c 50%, #00b343 100%); border-color: #00802f; }
 
         .bloc-effet.actif[data-id="DYNA"] span, 
         .bloc-effet.actif[data-id="DELAY"] span {
             color: #000000;
-            background-color: rgba(255,255,255,0.4);
+            background-color: rgba(255,255,255,0.5);
         }
 
+        /* SECTION DES RÉGLAGES */
         .zone-reglages-panel {
             width: 100%;
             max-width: 400px;
             background-color: var(--bg-conteneur);
             border-radius: 14px;
+            border: 1px solid var(--border-couleur);
             padding: 10px 12px;
             margin-top: 15px;
             box-sizing: border-box;
@@ -357,11 +405,12 @@
             font-weight: bold;
         }
 
+        /* MODAL POPUP VISTA */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -374,7 +423,7 @@
             max-width: 320px;
             border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.6);
             text-align: center;
         }
 
@@ -394,28 +443,41 @@
         }
 
         .btn-choix {
-            background-color: var(--bg-bouton);
-            border: none;
+            background: var(--bg-bouton-vista);
+            border: 1px solid var(--border-couleur);
             border-radius: 8px;
             padding: 12px;
             font-size: 15px;
             color: #0a84ff;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn-choix::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: var(--reflet-glossy); pointer-events: none;
         }
 
         .btn-eteindre {
             margin-top: 15px;
-            background-color: var(--bg-bouton-actif);
+            background: linear-gradient(to bottom, #555 0%, #3a3a3c 45%, #222 50%, #333 100%);
+            border: 1px solid #555;
             color: #ff453a;
-            border: none;
             border-radius: 8px;
             padding: 12px;
             width: 100%;
             font-weight: bold;
             font-size: 15px;
             cursor: pointer;
-            box-shadow: 0 2px 4px var(--shadow-couleur);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .btn-eteindre::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: var(--reflet-glossy); pointer-events: none;
         }
     </style>
 </head>
@@ -460,6 +522,7 @@
 
         <div class="barre-effets" id="zoneEffets"></div>
 
+        <!-- PANEL POUR LES POTENTIOMÈTRES COMPACTS -->
         <div class="zone-reglages-panel" id="panelReglages">
             <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
             <div id="conteneurSliders"></div>
@@ -476,6 +539,7 @@
     </div>
 
     <script>
+        // Le script JavaScript reste identique pour conserver le fonctionnement exact
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
@@ -787,7 +851,6 @@
 
         function fermerPopUp() { document.getElementById('monPopUp').style.display = 'none'; }
 
-        // Reste des fonctions inchangées
         function initDragAndDrop() {
             const conteneur = document.getElementById('zoneEffets');
             conteneur.addEventListener('dragover', (e) => {
