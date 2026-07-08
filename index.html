@@ -474,7 +474,7 @@
                 'PV 5050 412', 'EV 5050 412', 'HT 412', 'Diesel 412'
             ],
             'MOD': ['Chorus CE-2', 'Phase 90'],
-            'DELAY': ['Digital Delay', 'Analog Delay'],
+            'DELAY': ['Digital', 'Analog', 'Real Echo', 'Tape', 'Mod', 'Reverse'],
             'REVERB': ['Room', 'Hall', 'Plate', 'Spring', 'Mod'],
             'COMP': ['Dynacomp', 'Studio Comp'],
             'EQ': ['7-Band Graphic']
@@ -497,14 +497,19 @@
             structureReglages[modele] = ['Gain', 'Bass', 'Mid', 'Treble', 'Presence', 'Master'];
         });
 
-        // Configuration CAB (pas de réglages)
+        // Configuration CAB
         modelesPedales.CAB.forEach(modele => {
             structureReglages[modele] = [];
         });
 
-        // Configuration REVERB (Pre Delay, Level, Decay, Tone)
+        // Configuration REVERB
         modelesPedales.REVERB.forEach(modele => {
             structureReglages[modele] = ['Pre Delay', 'Level', 'Decay', 'Tone'];
+        });
+
+        // Configuration DELAY (Level, Feedback, Time)
+        modelesPedales.DELAY.forEach(modele => {
+            structureReglages[modele] = ['Level', 'Feedback', 'Time'];
         });
 
         let presetsSauvegardes = {
@@ -681,8 +686,12 @@
             }
 
             listeParams.forEach(param => {
+                // Règle spécifique pour l'amplitude : 0 à 1000 pour Time, sinon 0 à 100
+                let maxBorne = (param === 'Time') ? 1000 : 100;
+                let valeurParDefaut = (param === 'Time') ? 350 : 50;
+
                 if (presetsSauvegardes[modeActuel].valeursParams[nomModele][param] === undefined) {
-                    presetsSauvegardes[modeActuel].valeursParams[nomModele][param] = 50;
+                    presetsSauvegardes[modeActuel].valeursParams[nomModele][param] = valeurParDefaut;
                 }
                 
                 let valeurActuelle = presetsSauvegardes[modeActuel].valeursParams[nomModele][param];
@@ -690,10 +699,10 @@
                 htmlSliders += `
                 <div class="ligne-potentiometre">
                     <span class="nom-param">${param}</span>
-                    <input type="range" class="curseur-slider" min="0" max="100" value="${valeurActuelle}" 
-                        oninput="mettreAJourValeurParam('${nomModele}', '${param}', this.value, 'input')">
-                    <input type="number" class="carre-numerique" min="0" max="100" value="${valeurActuelle}" 
-                        oninput="mettreAJourValeurParam('${nomModele}', '${param}', this.value, 'slider')">
+                    <input type="range" class="curseur-slider" min="0" max="${maxBorne}" value="${valeurActuelle}" 
+                        oninput="mettreAJourValeurParam('${nomModele}', '${param}', this.value, 'input', ${maxBorne})">
+                    <input type="number" class="carre-numerique" min="0" max="${maxBorne}" value="${valeurActuelle}" 
+                        oninput="mettreAJourValeurParam('${nomModele}', '${param}', this.value, 'slider', ${maxBorne})">
                 </div>`;
             });
 
@@ -701,10 +710,10 @@
             panel.style.display = 'block';
         }
 
-        function mettreAJourValeurParam(nomModele, param, valeur, cibleAChanger) {
+        function mettreAJourValeurParam(nomModele, param, valeur, cibleAChanger, maxBorne) {
             let valNum = parseInt(valeur) || 0;
             if (valNum < 0) valNum = 0;
-            if (valNum > 100) valNum = 100;
+            if (valNum > maxBorne) valNum = maxBorne;
 
             presetsSauvegardes[modeActuel].valeursParams[nomModele][param] = valNum;
 
