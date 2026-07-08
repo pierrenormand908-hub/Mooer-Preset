@@ -17,7 +17,6 @@
             --bg-principal: #1c1c1e;
             --bg-conteneur: #2c2c2e;
             --bg-bouton: #3a3a3c;
-            /* Dégradé adouci sans coupure nette au milieu */
             --bg-bouton-vista: linear-gradient(to bottom, #4a4a4c 0%, #303032 50%, #202022 100%);
             --bg-bouton-actif: #48484a;
             --texte-principal: #ffffff;
@@ -26,7 +25,6 @@
             --shadow-couleur: rgba(0,0,0,0.5);
             --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
             
-            /* Pour les options épurées */
             --bg-action-flat: #3a3a3c;
             --texte-action-flat: #ffffff;
         }
@@ -36,7 +34,6 @@
             --bg-principal: #f2f2f7;
             --bg-conteneur: #ffffff;
             --bg-bouton: #e5e5ea;
-            /* Dégradé adouci pour le mode clair */
             --bg-bouton-vista: linear-gradient(to bottom, #ffffff 0%, #f2f2f7 50%, #d1d1d6 100%);
             --bg-bouton-actif: #b5b5ba;
             --texte-principal: #000000;
@@ -45,7 +42,6 @@
             --shadow-couleur: rgba(0,0,0,0.15);
             --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
             
-            /* Pour les options épurées */
             --bg-action-flat: #e5e5ea;
             --texte-action-flat: #000000;
         }
@@ -139,7 +135,7 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            transition: all 0.2s ease;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
         .btn-guitare::after {
@@ -147,13 +143,27 @@
             background: var(--reflet-glossy); pointer-events: none;
         }
 
-        /* ÉLECTRIQUE / ACOUSTIQUE SELECTIONNÉ : Dégradé bleu très doux */
+        /* EFFET ENFONCÉ ACCENTUÉ POUR LES BOUTONS GUITARE non-actifs */
+        .btn-guitare:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 2px var(--shadow-couleur), inset 0 4px 6px rgba(0, 0, 0, 0.4);
+            filter: brightness(0.85);
+        }
+
+        /* ÉLECTRIQUE / ACOUSTIQUE SELECTIONNÉ */
         .btn-guitare.actif {
             background: linear-gradient(to bottom, #4fa4ff 0%, #007aff 50%, #0056b3 100%);
             border-color: #004b9c;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
             text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+
+        /* EFFET ENFONCÉ ACCENTUÉ POUR LE BOUTON GUITARE QUAND IL EST ACTIF */
+        .btn-guitare.actif:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 3px rgba(0, 122, 255, 0.2), inset 0 4px 8px rgba(0, 0, 0, 0.5);
+            filter: brightness(0.8);
         }
 
         .rectangle-icone-central {
@@ -198,10 +208,10 @@
         }
 
         .btn-enregistrer { background-color: #34c759; color: white; }
-        .btn-enregistrer:active { background-color: #248a3d; }
+        .btn-enregistrer:active { background-color: #248a3d; transform: translateY(1px); }
 
         .btn-effacer { background-color: #ff3b30; color: white; }
-        .btn-effacer:active { background-color: #c72c24; }
+        .btn-effacer:active { background-color: #c72c24; transform: translateY(1px); }
 
         .nom-preset-affiche {
             font-size: 13px;
@@ -256,7 +266,7 @@
             cursor: grab;
             position: relative;
             overflow: hidden;
-            transition: all 0.15s ease;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
             touch-action: none;
             box-shadow: 0 4px 6px var(--shadow-couleur), inset 0 1px 1px rgba(255,255,255,0.1);
             text-shadow: 0 1px 1px rgba(0,0,0,0.5);
@@ -273,12 +283,25 @@
             border-top-right-radius: 9px;
         }
 
-        .bloc-effet:active { cursor: grabbing; }
+        .bloc-effet:active { 
+            cursor: grabbing; 
+            transform: translateY(3px) !important; /* Force l'enfoncement mécanique au clic */
+            box-shadow: 0 1px 2px var(--shadow-couleur), inset 0 4px 6px rgba(0, 0, 0, 0.5) !important;
+            filter: brightness(0.8);
+        }
 
         .bloc-effet.actif {
-            transform: translateY(2px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.7), inset 0 2px 5px rgba(0,0,0,0.3);
+            /* État actif de base (pédale allumée) */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);
         }
+        
+        .bloc-effet.actif:active {
+            /* Pédale allumée ET enfoncée au clic */
+            transform: translateY(3px) !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset 0 5px 8px rgba(0,0,0,0.6) !important;
+            filter: brightness(0.75);
+        }
+
         .bloc-effet.actif::after {
             background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
         }
@@ -286,7 +309,7 @@
         .bloc-effet.en-deplacement {
             opacity: 0.4;
             border: 2px dashed #0a84ff !important;
-            transform: scale(0.95);
+            transform: scale(0.95) !important;
         }
 
         .bloc-effet span {
@@ -309,7 +332,7 @@
             z-index: 2; 
         }
 
-        /* HARMONISATION DES COCKPITS ACTIFS : DEGRADES TRÈS DOUX (PROGRESSIFS SUR 100%) */
+        /* HARMONISATION DES COCKPITS ACTIFS */
         .bloc-effet.actif[data-id="DYNA"]   { background: linear-gradient(to bottom, #ffe885 0%, #ffcc00 100%); border-color: #b38f00; color: #000; text-shadow: none; }
         .bloc-effet.actif[data-id="COMP"]   { background: linear-gradient(to bottom, #ffbe6b 0%, #ff9500 100%); border-color: #b36200; }
         .bloc-effet.actif[data-id="OD"]     { background: linear-gradient(to bottom, #ff8078 0%, #ff453a 100%); border-color: #b01e16; }
@@ -519,7 +542,7 @@
     </div>
 
     <script>
-        // Tout ton code logique JS est conservé au poil près
+        // Le code JS reste 100% identique et pleinement fonctionnel
         const modelesPedales = {
             'DYNA': ['NG', 'Comp', 'Touch Wah', 'Auto Wah'],
             'OD': [
