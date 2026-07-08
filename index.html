@@ -16,7 +16,7 @@
         /* THÈME SOMBRE (PAR DÉFAUT) */
         :root {
             --bg-principal: #1c1c1e;
-            --bg-conteneur: #2c2c2e;
+            --bg-conteneur: #121216; /* Assombri pour accentuer l'effet de profondeur */
             --bg-bouton: #3a3a3c;
             --bg-bouton-vista: linear-gradient(to bottom, #4a4a4c 0%, #303032 50%, #202022 100%);
             --bg-bouton-actif: #48484a;
@@ -33,8 +33,8 @@
         /* THÈME CLAIR */
         [data-theme="light"] {
             --bg-principal: #f2f2f7;
-            --bg-conteneur: #ffffff;
-            --bg-bouton: #e5e5ea;
+            --bg-conteneur: #e5e5ea; 
+            --bg-bouton: #ffffff;
             --bg-bouton-vista: linear-gradient(to bottom, #ffffff 0%, #f2f2f7 50%, #d1d1d6 100%);
             --bg-bouton-actif: #b5b5ba;
             --texte-principal: #000000;
@@ -43,7 +43,7 @@
             --shadow-couleur: rgba(0,0,0,0.15);
             --reflet-glossy: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0) 100%);
             
-            --bg-action-flat: #e5e5ea;
+            --bg-action-flat: #ffffff;
             --texte-action-flat: #000000;
         }
 
@@ -159,16 +159,17 @@
             filter: brightness(0.9);
         }
 
+        /* PETIT BOÎTIER CENTRAL (REMIS SANS EFFET CREUSÉ ULTRA PROFOND) */
         .rectangle-icone-central {
             width: 45px; 
             height: 88px;
+            background-color: var(--bg-bouton);
             border: 1px solid var(--border-couleur);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--bg-conteneur);
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 4px var(--shadow-couleur);
             overflow: hidden;
         }
 
@@ -206,7 +207,7 @@
         .btn-effacer { background-color: #ff3b30; color: white; }
         .btn-effacer:active { background-color: #c72c24; transform: translateY(1px); }
 
-        /* AJUSTEMENT : EFFET PROFONDEUR INCRUSTÉ POUR LE TEXTE PRESET */
+        /* 1. PREMIER CADRE CREUSÉ : LE TEXTE PRESET */
         .nom-preset-affiche {
             font-size: 13px;
             font-weight: 700;
@@ -215,17 +216,17 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             background-color: var(--bg-conteneur);
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 12px;
             
-            border-top: 1px solid rgba(0, 0, 0, 0.7);
-            border-left: 1px solid rgba(0, 0, 0, 0.7);
+            border-top: 2px solid rgba(0, 0, 0, 0.8);
+            border-left: 2px solid rgba(0, 0, 0, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             border-right: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6), 0 1px 0px rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.6), 0 1px 0px rgba(255, 255, 255, 0.1);
         }
 
-        /* AJUSTEMENT : CADRE DES EFFETS STYLE RACK STUDIO ULTRA PROFOND */
+        /* 2. DEUXIÈME CADRE CREUSÉ : LA BAIE DES PÉDALES D'EFFET */
         .barre-effets {
             width: 100%;
             max-width: 400px;
@@ -243,6 +244,7 @@
             touch-action: pan-x; 
             -webkit-overflow-scrolling: touch;
 
+            /* Bordures 3D et ombres internes pour creuser tout le tour */
             border-top: 2px solid rgba(0, 0, 0, 0.8);
             border-left: 2px solid rgba(0, 0, 0, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -251,6 +253,20 @@
             box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.7), 
                         inset 0 -2px 6px rgba(255, 255, 255, 0.05),
                         0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* PANNEAU DE RÉGLAGES (D'ORIGINE, PAS TOUCHÉ) */
+        .zone-reglages-panel {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--bg-conteneur);
+            border-radius: 14px;
+            border: 1px solid var(--border-couleur);
+            padding: 10px 12px;
+            margin-top: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 12px var(--shadow-couleur);
+            display: none;
         }
 
         .bloc-effet {
@@ -345,19 +361,6 @@
         .bloc-effet.actif[data-id="DELAY"] span {
             color: #000000;
             background-color: rgba(255,255,255,0.4);
-        }
-
-        .zone-reglages-panel {
-            width: 100%;
-            max-width: 400px;
-            background-color: var(--bg-conteneur);
-            border-radius: 14px;
-            border: 1px solid var(--border-couleur);
-            padding: 10px 12px;
-            margin-top: 15px;
-            box-sizing: border-box;
-            box-shadow: 0 4px 12px var(--shadow-couleur);
-            display: none;
         }
 
         .titre-reglages {
@@ -499,6 +502,7 @@
                 </div>
             </div>
 
+            <!-- Boîtier central d'origine -->
             <div class="rectangle-icone-central" id="zoneIconeCentrale">
                 <img src="img/electrique-removebg-preview.png" alt="Icône Guitare" class="mon-icone-png" id="imageGuitareCentrale">
             </div>
@@ -512,9 +516,13 @@
             </div>
         </div>
 
+        <!-- 1. Cadre Creusé : Nom Preset -->
         <div class="nom-preset-affiche" id="nomPresetAffiche">Preset : Guitare Électrique</div>
+        
+        <!-- 2. Cadre Creusé : Pédales d'effet -->
         <div class="barre-effets" id="zoneEffets"></div>
 
+        <!-- Panneau des réglages d'origine -->
         <div class="zone-reglages-panel" id="panelReglages">
             <div class="titre-reglages" id="titreReglages">Réglages : Aucun</div>
             <div id="conteneurSliders"></div>
