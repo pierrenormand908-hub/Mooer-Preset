@@ -116,6 +116,192 @@
             flex-direction: column;
             gap: 8px;
             align-items: center;
+            position: relative;
+        }
+
+        /* LISTE DÉROULANTE DES PRESETS ENREGISTRÉS */
+        .dropdown-presets {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 63px;
+            left: 0;
+            width: 140px;
+            max-height: 230px;
+            background-color: var(--bg-conteneur);
+            border: 1px solid var(--border-couleur);
+            border-radius: 8px;
+            box-shadow: 0 6px 14px var(--shadow-couleur);
+            z-index: 60;
+            padding: 4px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .dropdown-presets.ouvert {
+            display: flex;
+        }
+
+        .dropdown-presets-liste {
+            overflow-y: auto;
+            max-height: 150px;
+        }
+
+        .dropdown-presets .item-preset {
+            display: flex;
+            align-items: center;
+            padding: 8px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--texte-principal);
+            cursor: pointer;
+        }
+
+        .dropdown-presets .item-preset.selectionne {
+            background-color: #0a84ff;
+            color: #ffffff;
+        }
+
+        .dropdown-presets .item-preset:active {
+            filter: brightness(0.9);
+        }
+
+        .dropdown-presets .nom-item-preset {
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-presets .vide-liste {
+            font-size: 11px;
+            color: var(--texte-secondaire);
+            padding: 8px;
+            text-align: center;
+        }
+
+        .dropdown-presets-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .btn-suppr-liste, .btn-fermer-liste {
+            flex: 1;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px 4px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .btn-suppr-liste {
+            background-color: #ff3b30;
+            color: #ffffff;
+        }
+
+        .btn-fermer-liste {
+            background-color: var(--bg-bouton);
+            color: var(--texte-principal);
+            border: 1px solid var(--border-couleur);
+        }
+
+        .btn-suppr-liste:active {
+            background-color: #c72c24;
+        }
+
+        .btn-fermer-liste:active {
+            filter: brightness(0.9);
+        }
+
+        .btn-suppr-liste:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        /* MODALE DE SAISIE DU NOM DE PRESET (remplace window.prompt, non supporté en PWA iOS) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.55);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.ouvert {
+            display: flex;
+        }
+
+        .modal-nom-contenu {
+            background-color: var(--bg-conteneur);
+            border-radius: 14px;
+            padding: 20px;
+            width: 260px;
+            max-width: 85vw;
+            box-sizing: border-box;
+            box-shadow: 0 10px 26px rgba(0,0,0,0.5);
+        }
+
+        .modal-nom-titre {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--texte-principal);
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-couleur);
+            background-color: var(--bg-bouton);
+            color: var(--texte-principal);
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .modal-boutons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 0;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn-annuler {
+            background-color: var(--bg-bouton);
+            color: var(--texte-principal);
+        }
+
+        .modal-btn-valider {
+            background-color: #34c759;
+            color: #ffffff;
+        }
+
+        .modal-btn-danger {
+            background-color: #ff3b30;
+            color: #ffffff;
+        }
+
+        .modal-btn-valider:active, .modal-btn-annuler:active, .modal-btn-danger:active {
+            filter: brightness(0.9);
         }
 
         .btn-guitare {
@@ -496,10 +682,17 @@
 
         <div class="selecteurs-container">
             <div class="colonne-preset">
-                <div id="btn-elec" class="btn-guitare actif" onclick="changerMode('electrique')">ÉLECTRIQUE</div>
+                <div id="btn-elec" class="btn-guitare actif" onclick="clicBoutonInstrument('electrique')">ÉLECTRIQUE</div>
+                <div class="dropdown-presets" id="dropdown-electrique">
+                    <div class="dropdown-presets-liste" id="liste-electrique"></div>
+                    <div class="dropdown-presets-actions">
+                        <button class="btn-fermer-liste" onclick="fermerListesPresets()">Fermer</button>
+                        <button class="btn-suppr-liste" id="btn-suppr-electrique" onclick="supprimerSelectionCourante('electrique')" disabled>Supprimer</button>
+                    </div>
+                </div>
                 <div class="actions-preset-container">
                     <button class="btn-enregistrer" onclick="enregistrerPreset('electrique')">Sauver</button>
-                    <button class="btn-effacer" onclick="effacerPreset('effacer')">Effacer</button>
+                    <button class="btn-effacer" onclick="effacerPreset('electrique')">Effacer</button>
                 </div>
             </div>
 
@@ -509,7 +702,14 @@
             </div>
 
             <div class="colonne-preset">
-                <div id="btn-acoust" class="btn-guitare" onclick="changerMode('acoustique')">ACOUSTIQUE</div>
+                <div id="btn-acoust" class="btn-guitare" onclick="clicBoutonInstrument('acoustique')">ACOUSTIQUE</div>
+                <div class="dropdown-presets" id="dropdown-acoustique">
+                    <div class="dropdown-presets-liste" id="liste-acoustique"></div>
+                    <div class="dropdown-presets-actions">
+                        <button class="btn-fermer-liste" onclick="fermerListesPresets()">Fermer</button>
+                        <button class="btn-suppr-liste" id="btn-suppr-acoustique" onclick="supprimerSelectionCourante('acoustique')" disabled>Supprimer</button>
+                    </div>
+                </div>
                 <div class="actions-preset-container">
                     <button class="btn-enregistrer" onclick="enregistrerPreset('acoustique')">Sauver</button>
                     <button class="btn-effacer" onclick="effacerPreset('acoustique')">Effacer</button>
@@ -535,6 +735,27 @@
             <div class="modal-titre" id="titrePopUp">Choisir l'effet</div>
             <div class="liste-choix" id="zoneChoix"></div>
             <button class="btn-eteindre" onclick="eteindreEffetActuel()">Éteindre l'effet</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalNomPreset">
+        <div class="modal-nom-contenu">
+            <div class="modal-nom-titre">Nom du preset</div>
+            <input type="text" id="inputNomPreset" class="modal-input" placeholder="Ex: Rock Lead" maxlength="40">
+            <div class="modal-boutons">
+                <button class="modal-btn modal-btn-annuler" onclick="fermerModalNomPreset()">Annuler</button>
+                <button class="modal-btn modal-btn-valider" onclick="validerEnregistrementPreset()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalConfirmation">
+        <div class="modal-nom-contenu">
+            <div class="modal-nom-titre" id="texteConfirmation">Confirmer ?</div>
+            <div class="modal-boutons">
+                <button class="modal-btn modal-btn-annuler" onclick="repondreConfirmation(false)">Annuler</button>
+                <button class="modal-btn modal-btn-danger" onclick="repondreConfirmation(true)">Confirmer</button>
+            </div>
         </div>
     </div>
 
@@ -626,6 +847,11 @@
         let categorieEnCours = '';
         let elementEnCours = null;
 
+        // Liste des presets nommés enregistrés par l'utilisateur (via le bouton "Sauver")
+        let presetsListe = { electrique: [], acoustique: [] };
+        let dropdownOuvert = null;
+        let selectionCourante = { electrique: null, acoustique: null };
+
         window.onload = function() {
             let themeSauvegarde = localStorage.getItem('app_theme') || 'dark';
             document.documentElement.setAttribute('data-theme', themeSauvegarde);
@@ -636,7 +862,23 @@
             if (sauvegardeElec) { presetsSauvegardes.electrique = JSON.parse(sauvegardeElec); }
             if (sauvegardeAcoust) { presetsSauvegardes.acoustique = JSON.parse(sauvegardeAcoust); }
 
+            let listeElec = localStorage.getItem('liste_presets_electrique');
+            let listeAcoust = localStorage.getItem('liste_presets_acoustique');
+
+            if (listeElec) { presetsListe.electrique = JSON.parse(listeElec); }
+            if (listeAcoust) { presetsListe.acoustique = JSON.parse(listeAcoust); }
+
             changerMode('electrique');
+
+            // Ferme la liste déroulante si on clique en dehors d'une colonne-preset.
+            // Utilise la phase de "capture" (dernier paramètre = true) pour que ce test
+            // s'exécute AVANT que le clic sur un preset ne régénère la liste (ce qui
+            // détacherait l'élément cliqué et ferait échouer le test .closest()).
+            document.addEventListener('click', function(evenement) {
+                if (!evenement.target.closest('.colonne-preset')) {
+                    fermerListesPresets();
+                }
+            }, true);
         };
 
         function changerTheme(theme) {
@@ -863,13 +1105,169 @@
             localStorage.setItem(cleStorage, JSON.stringify(presetsSauvegardes[modeActuel]));
         }
 
+        function clicBoutonInstrument(mode) {
+            if (modeActuel !== mode) {
+                changerMode(mode);
+            }
+            toggleListePresets(mode);
+        }
+
+        function toggleListePresets(mode) {
+            const autreMode = (mode === 'electrique') ? 'acoustique' : 'electrique';
+            const dropdownAutre = document.getElementById('dropdown-' + autreMode);
+            if (dropdownAutre) { dropdownAutre.classList.remove('ouvert'); }
+
+            const dropdown = document.getElementById('dropdown-' + mode);
+            const etaitOuvert = dropdown.classList.contains('ouvert');
+
+            if (etaitOuvert) {
+                dropdown.classList.remove('ouvert');
+                dropdownOuvert = null;
+            } else {
+                rafraichirListePresets(mode);
+                dropdown.classList.add('ouvert');
+                dropdownOuvert = mode;
+            }
+        }
+
+        function fermerListesPresets() {
+            document.getElementById('dropdown-electrique').classList.remove('ouvert');
+            document.getElementById('dropdown-acoustique').classList.remove('ouvert');
+            dropdownOuvert = null;
+        }
+
+        function rafraichirListePresets(mode) {
+            const conteneurListe = document.getElementById('liste-' + mode);
+            const boutonSupprimer = document.getElementById('btn-suppr-' + mode);
+            const liste = presetsListe[mode];
+
+            if (!liste || liste.length === 0) {
+                conteneurListe.innerHTML = '<div class="vide-liste">Aucun preset enregistré</div>';
+                boutonSupprimer.disabled = true;
+                return;
+            }
+
+            let html = '';
+            liste.forEach((preset, index) => {
+                let classeSelection = (selectionCourante[mode] === index) ? ' selectionne' : '';
+                html += `<div class="item-preset${classeSelection}" onclick="chargerPresetListe('${mode}', ${index})">
+                    <span class="nom-item-preset">${preset.nom}</span>
+                </div>`;
+            });
+            conteneurListe.innerHTML = html;
+
+            boutonSupprimer.disabled = (selectionCourante[mode] === null);
+        }
+
+        function chargerPresetListe(mode, index) {
+            const preset = presetsListe[mode][index];
+            if (!preset) return;
+
+            presetsSauvegardes[mode] = JSON.parse(JSON.stringify(preset));
+
+            let cleStorage = (mode === 'electrique') ? 'preset_electrique_v2' : 'preset_acoustique_v2';
+            localStorage.setItem(cleStorage, JSON.stringify(presetsSauvegardes[mode]));
+
+            changerMode(mode);
+
+            // On met en surbrillance le preset choisi et on GARDE la liste ouverte.
+            // Seul le bouton "Fermer" (ou un tap en dehors) fermera la liste.
+            selectionCourante[mode] = index;
+            rafraichirListePresets(mode);
+        }
+
+        function supprimerSelectionCourante(mode) {
+            const index = selectionCourante[mode];
+            if (index === null || index === undefined) return;
+
+            const preset = presetsListe[mode][index];
+            if (!preset) return;
+
+            demanderConfirmation(`Supprimer le preset "${preset.nom}" ?`, function(confirme) {
+                if (!confirme) return;
+                presetsListe[mode].splice(index, 1);
+                let cleListe = (mode === 'electrique') ? 'liste_presets_electrique' : 'liste_presets_acoustique';
+                localStorage.setItem(cleListe, JSON.stringify(presetsListe[mode]));
+                selectionCourante[mode] = null;
+                rafraichirListePresets(mode);
+            });
+        }
+
+        // Modale de confirmation générique (remplace window.confirm, peu fiable en PWA iOS)
+        let callbackConfirmation = null;
+
+        function demanderConfirmation(message, callback) {
+            document.getElementById('texteConfirmation').innerText = message;
+            callbackConfirmation = callback;
+            document.getElementById('modalConfirmation').classList.add('ouvert');
+        }
+
+        function repondreConfirmation(reponse) {
+            document.getElementById('modalConfirmation').classList.remove('ouvert');
+            let cb = callbackConfirmation;
+            callbackConfirmation = null;
+            if (cb) { cb(reponse); }
+        }
+
+
+        let modeEnregistrementEnCours = null;
+
         function enregistrerPreset(mode) {
             sauvegarderOrdreActuel();
-            alert(`Preset ${presetsSauvegardes[mode].nom} enregistré avec succès !`);
+
+            modeEnregistrementEnCours = mode;
+            let nomDefaut = presetsSauvegardes[mode].nom || '';
+            let champ = document.getElementById('inputNomPreset');
+            champ.value = nomDefaut;
+
+            document.getElementById('modalNomPreset').classList.add('ouvert');
+            setTimeout(() => { champ.focus(); champ.select(); }, 50);
+        }
+
+        function fermerModalNomPreset() {
+            document.getElementById('modalNomPreset').classList.remove('ouvert');
+            modeEnregistrementEnCours = null;
+        }
+
+        function validerEnregistrementPreset() {
+            let mode = modeEnregistrementEnCours;
+            if (!mode) return;
+
+            let nomPreset = document.getElementById('inputNomPreset').value.trim();
+            if (nomPreset === '') {
+                alert("Merci de donner un nom au preset.");
+                return;
+            }
+
+            let copiePreset = JSON.parse(JSON.stringify(presetsSauvegardes[mode]));
+            copiePreset.nom = nomPreset;
+
+            let indexExistant = presetsListe[mode].findIndex(p => p.nom === nomPreset);
+            if (indexExistant >= 0) {
+                presetsListe[mode][indexExistant] = copiePreset;
+            } else {
+                presetsListe[mode].push(copiePreset);
+            }
+
+            let cleListe = (mode === 'electrique') ? 'liste_presets_electrique' : 'liste_presets_acoustique';
+            localStorage.setItem(cleListe, JSON.stringify(presetsListe[mode]));
+
+            presetsSauvegardes[mode].nom = nomPreset;
+            let cleCourante = (mode === 'electrique') ? 'preset_electrique_v2' : 'preset_acoustique_v2';
+            localStorage.setItem(cleCourante, JSON.stringify(presetsSauvegardes[mode]));
+            if (modeActuel === mode) {
+                document.getElementById('nomPresetAffiche').innerText = "Preset : " + nomPreset;
+            }
+
+            if (dropdownOuvert === mode) { rafraichirListePresets(mode); }
+
+            fermerModalNomPreset();
+            alert(`Preset "${nomPreset}" enregistré avec succès !`);
         }
 
         function effacerPreset(mode) {
-            if (confirm("Réinitialiser ce preset ?")) {
+            demanderConfirmation("Réinitialiser ce preset ?", function(confirme) {
+                if (!confirme) return;
                 if (modeActuel === 'electrique') {
                     localStorage.removeItem('preset_electrique_v2');
                     presetsSauvegardes.electrique.effets = { 'DYNA': 'Non défini', 'AMP': 'Non défini', 'CAB': 'Non défini', 'OD': 'Non défini', 'MOD': 'Non défini', 'DELAY': 'Non défini', 'REVERB': 'Non défini' };
@@ -882,7 +1280,7 @@
                     presetsSauvegardes.acoustique.valeursParams = {};
                 }
                 changerMode(modeActuel);
-            }
+            });
         }
     </script>
 </body>
