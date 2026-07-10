@@ -473,6 +473,7 @@
             color: var(--texte-principal);
             flex-shrink: 0;
             cursor: grab;
+            user-select: none;
             position: relative;
             overflow: hidden;
             transition: all 0.1s ease;
@@ -908,7 +909,7 @@
             ordreActuel.forEach(cat => {
                 if (data[cat] !== undefined) {
                     let classeActive = (data[cat] !== "Non défini") ? "actif" : "";
-                    htmlEffets += `<div class="bloc-effet ${classeActive}" draggable="true" data-id="${cat}">
+                    htmlEffets += `<div class="bloc-effet ${classeActive}" data-id="${cat}">
                         ${cat}<span class="choix-actuel" id="txt-${cat}">${data[cat]}</span>
                     </div>`;
                 }
@@ -936,18 +937,55 @@
                     if (!isDragging) { ouvrirPopUp(categorie, bloc); }
                 });
 
-                bloc.addEventListener('dragstart', (e) => {
-                    isDragging = true;
-                    bloc.classList.add('en-deplacement');
-                    e.dataTransfer.setData('text/plain', categorie);
-                });
+                // --- SOURIS (PC) : même logique que le tactile, sans dépendre du
+                // drag-and-drop natif HTML5 (peu fiable sans dragover/drop dédiés) ---
+                bloc.addEventListener('mousedown', (e) => {
+                    if (e.button !== 0) return; // uniquement clic gauche
+                    e.preventDefault();
 
-                bloc.addEventListener('dragend', () => {
                     isDragging = false;
-                    bloc.classList.remove('en-deplacement');
-                    sauvegarderOrdreActuel();
+                    const sourisStartX = e.clientX;
+                    const sourisStartY = e.clientY;
+
+                    const onMouseMove = (e2) => {
+                        let deltaX = Math.abs(e2.clientX - sourisStartX);
+                        let deltaY = Math.abs(e2.clientY - sourisStartY);
+
+                        if (deltaX > 5 || deltaY > 5) {
+                            isDragging = true;
+                            bloc.classList.add('en-deplacement');
+
+                            const conteneur = document.getElementById('zoneEffets');
+                            const cible = document.elementFromPoint(e2.clientX, e2.clientY);
+                            const blocCible = cible ? cible.closest('.bloc-effet') : null;
+
+                            if (blocCible && blocCible !== bloc) {
+                                const rect = blocCible.getBoundingClientRect();
+                                const milieu = rect.left + rect.width / 2;
+                                if (e2.clientX < milieu) {
+                                    conteneur.insertBefore(bloc, blocCible);
+                                } else {
+                                    conteneur.insertBefore(bloc, blocCible.nextSibling);
+                                }
+                            }
+                        }
+                    };
+
+                    const onMouseUp = () => {
+                        if (isDragging) {
+                            bloc.classList.remove('en-deplacement');
+                            sauvegarderOrdreActuel();
+                            setTimeout(() => { isDragging = false; }, 50);
+                        }
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
                 });
 
+                // --- TACTILE (mobile) ---
                 let touchStartX, touchStartY;
                 bloc.addEventListener('touchstart', (e) => {
                     isDragging = false; 
